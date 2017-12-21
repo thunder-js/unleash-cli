@@ -1,11 +1,10 @@
 # Artanis
 
-![Artanis](https://raw.githubusercontent.com/thunder-js/unleash/master/src/resources/demon.jpg)
+![Artanis](https://raw.githubusercontent.com/thunder-js/unleash/master/resources/demon.jpg)
 
 *" Everything you need to make money! "*
 
 ## Features
-![Features](https://raw.githubusercontent.com/rafaelcorreiapoli/artanis/master/src/resources/images/features.png)
 
 - ✅ Scaffold new react-native app
 - ✅ Scaffold new react-web app
