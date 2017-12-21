@@ -29,26 +29,26 @@ npm install -g unleash-cli
 ```
 
 ## Usage
-**Comingo soon...**
+*Coming soon...*
 
 ## Examples
 Creating a new react-native project
 ```
-unleash new react-native MyProjectName
+$ unleash new react-native MyProjectName
 ```
 Creating a react module
 ```
-unleash react module my-module
+$ unleash react module my-module
 ```
 Creating a List from GraphQL query
 ```
-unleash react list --query queries/my-query.js
+$ unleash react list --query queries/my-query.js
 ```
 Creating a Form from GraphQL query
 ```
-unleash react form --mutation mutation/my-mutation.js
+$ unleash react form --mutation mutation/my-mutation.js
 ```
 Creating a HoC from GraphQL query
 ```
-unleash react hoc --query queries/my-query.js
+$ unleash react hoc --query queries/my-query.js
 ```
