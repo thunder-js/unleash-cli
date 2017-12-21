@@ -1,6 +1,6 @@
 # Artanis
 
-![Artanis](https://raw.githubusercontent.com/thunder-js/unleash/master/resources/demon.jpg)
+![Artanis](https://raw.githubusercontent.com/thunder-js/unleash-cli/master/resources/demon.jpg)
 
 *" Everything you need to make money! "*
 
