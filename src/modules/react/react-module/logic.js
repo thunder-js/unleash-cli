@@ -6,7 +6,7 @@ import { MODULES_DIR } from './constants'
 
 export const getReactModulesFolder = async (cwd) => {
   const projectRootFolder = await pkgDir(cwd)
-  return path.join(projectRootFolder, SRC_DIR, MODULES_DIR)
+  return projectRootFolder ? path.join(projectRootFolder, SRC_DIR, MODULES_DIR) : null
 }
 
 export const createFolders = async (modulesFolder, moduleName) => {
