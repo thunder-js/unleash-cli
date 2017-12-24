@@ -1,20 +1,13 @@
 #!/usr/bin/env node
 import 'babel-polyfill'
-
-import R from 'ramda'
 import yargs from 'yargs'
-import attachModuleNew from './modules/new'
-import attachModuleReact from './modules/react'
+import newCLI from './modules/new/cli'
+import reactCLI from './modules/react/cli'
 
-const attachModules = R.compose(
-  attachModuleNew,
-  attachModuleReact,
-)
-
-const baseProgram = yargs
-  .usage('$0 <cmd> [args]')
+yargs
+  // .usage('$0 <cmd> [args]')
+  .command('new', 'create a new [rn|rw] project', newCLI)
+  .command('react', 'create react things', reactCLI)
   .help()
-
-const programWithModules = attachModules(baseProgram)
-
-programWithModules.argv
+  .wrap(null)
+  .parse()
