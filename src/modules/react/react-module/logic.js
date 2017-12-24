@@ -9,8 +9,7 @@ export const getReactModulesFolder = async (cwd) => {
   return projectRootFolder ? path.join(projectRootFolder, SRC_DIR, MODULES_DIR) : null
 }
 
-export const createFolders = async (modulesFolder, moduleName) => {
+export const getFoldersPaths = (modulesFolder, moduleName) => {
   const folders = ['components', 'containers', 'hocs', 'logic', 'queries', 'mutations']
-  const mkdirPromises = folders.map(folder => fs.mkdirp(path.join(modulesFolder, moduleName, folder)))
-  await Promise.all(mkdirPromises)
+  return folders.map(folder => path.join(modulesFolder, moduleName, folder))
 }

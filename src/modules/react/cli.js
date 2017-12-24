@@ -15,7 +15,7 @@ export default yargs => yargs
       describe: 'the name of the react list',
     })
   }, argv => createList(argv.name))
-  .command('component [name]', 'Unleash react component', (yargs) => {
+  .command('component [name...]', 'Unleash react component', (yargs) => {
     yargs.positional('name', {
       type: 'string',
       describe: 'the name of the react component',

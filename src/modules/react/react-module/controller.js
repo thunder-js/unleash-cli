@@ -1,4 +1,5 @@
-import { getReactModulesFolder, createFolders } from './logic'
+import { getReactModulesFolder, getFoldersPaths } from './logic'
+import { createFolders } from './diplomat'
 import { spinner } from '../../common/ui'
 
 export const createModule = async (name) => {
@@ -8,6 +9,7 @@ export const createModule = async (name) => {
     spinner.fail('Not in project folder.')
     return process.exit(1)
   }
-  await createFolders(modulesFolder, name)
+  const foldersPaths = getFoldersPaths(modulesFolder, name)
+  await createFolders(foldersPaths)
   spinner.succeed()
 }
