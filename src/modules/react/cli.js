@@ -25,7 +25,7 @@ export default yargs => yargs
       describe: 'the queryPath of the react list',
     })
   }, (argv) => {
-    return createHoc(argv.queryPath)
+    return createHoc(argv.queryPath, true)
   })
   .command('component [name...]', 'Unleash react component', (subYargs) => {
     subYargs.positional('name', {

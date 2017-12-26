@@ -1,0 +1,45 @@
+import { graphql } from 'react-apollo'
+import <%= mutationName %> from '../mutations/<%= mutationFileName %>'
+import {
+  <%= mutationName %>Mutation,
+} from '../../../operation-result-types'
+
+export interface IWith<%= interfaceName %>WrappedProps {
+  <%= mutationName %>: (id: string) => Promise<any>
+}
+
+export default graphql<<%= mutationName %>Mutation, {}, IWith<%= interfaceName %>WrappedProps>(<%= mutationName %>, {
+  props: ({ mutate }) => ({
+    <%= mutationName %>: async (id) => {
+      if (!mutate) { return }
+      try {
+        /**
+         * Commit mutation
+         */
+        const result = await mutate({
+          variables: {
+            input: {
+              id,
+              clientMutationId: 'clientMutationId',
+            },
+          },
+          /**
+           * Update local cache
+           */
+          update: (store, { data: { <%= mutationName %> } }) => {
+            // const data = store.readQuery<...>({ query: ... })
+            // store.writeQuery({ query: allDrinks, data })
+          },
+        })
+        /**
+         * Handle success
+         */
+      } catch (err) {
+        /**
+         * Handle Error
+         */
+
+      }
+    },
+  }),
+})
