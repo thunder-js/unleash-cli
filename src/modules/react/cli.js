@@ -1,6 +1,6 @@
 import { createModule } from './react-module/controller'
 import { createComponent } from './component/controller'
-import { createList } from './list/controller'
+import { createListPack } from './list/controller'
 import { createHoc } from './hoc/controller'
 
 export default yargs => yargs
@@ -16,8 +16,7 @@ export default yargs => yargs
       describe: 'the name of the react list',
     })
   }, (argv) => {
-    console.log(argv)
-    return createList(argv.name)
+    return createListPack(argv.name)
   })
   .command('hoc [queryPath]', 'Unleash react hoc', (subYargs) => {
     subYargs.positional('queryPath', {

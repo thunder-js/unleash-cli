@@ -3,37 +3,9 @@ import fs from 'fs-extra'
 import gql from 'graphql-tag'
 import { render } from '../../common/template'
 import { spinner } from '../../common/ui'
-import { getFoldersPaths } from '../react-module/logic';
-
-const capitalizeFirst = string => `${string[0].toUpperCase()}${string.slice(1)}`
-
-const getQueryName = document => document.definitions[0].name.value
-
-const camelToKebab = string => string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
-
-const extractSDL = (fileContent) => {
-  const groups = fileContent.replace('\n', '').match(/gql`([\s\S]*?)`/)
-  return groups && groups[1]
-}
-
-const safelyWrite = async (destPath, content, force) => {
-  const destExists = await fs.exists(destPath)
-  if (!force && destExists) {
-    throw new Error(`File ${destPath} already exists.`)
-  }
-  return fs.writeFile(destPath, content)
-}
-
-const safelyRead = async (filePath) => {
-  const exists = await fs.pathExists(filePath)
-  if (!exists) {
-    throw new Error(`File ${filePath} does not exist.`)
-  }
-
-  return fs.readFile(filePath, 'utf8')
-}
-
-const getOperation = document => document.definitions[0].operation
+import { safelyRead, safelyWrite } from '../../common/files'
+import { capitalizeFirst, camelToKebab } from '../../common/string'
+import { getDocumentQueryName, getDocumentOperation, extractSDL } from '../../common/graphql'
 
 export const createHoc = async (queryPath, force) => {
   spinner.start('Creating hoc...')
@@ -43,8 +15,8 @@ export const createHoc = async (queryPath, force) => {
     const sdl = extractSDL(fileContent)
     const ast = gql`${sdl}`
     
-    const operation = getOperation(ast)
-    const name = getQueryName(ast)
+    const operation = getDocumentOperation(ast)
+    const name = getDocumentQueryName(ast)
     const fileName = path.basename(absolutePath, '.ts')
     const interfaceName = capitalizeFirst(name)
     const hocFileName = `with-${camelToKebab(name)}.ts`

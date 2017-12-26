@@ -1,0 +1,12 @@
+import React from 'react';
+import { storiesOf } from '@storybook/react-native';
+import <%= componentName %> from './'
+import { View } from 'react-native'
+
+storiesOf('<%= componentName %> Component', module)
+  .add('default', () => (
+    <<%= componentName %>
+      id='1'
+      onPress={() => {}}
+    />
+  ))

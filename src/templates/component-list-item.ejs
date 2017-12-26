@@ -1,0 +1,29 @@
+import React from 'react'
+import { View, Text, StyleSheet, ViewStyle, TextStyle, TouchableOpacity } from 'react-native'
+
+export interface I<%= componentName %>Props {
+  id: string;
+  onPress: () => void;
+}
+
+const <%= componentName %>: React.SFC<I<%= componentName %>Props> = ({
+  id,
+  onPress,
+}) => (
+  <View style={styles.container}>
+    <TouchableOpacity onPress={onPress}>
+      <Text style={styles.text}>{id}</Text>
+    </TouchableOpacity>
+  </View>
+)
+
+const styles = StyleSheet.create({
+  container:	{
+
+  } as ViewStyle,
+  text: {
+
+  } as TextStyle,
+})
+
+export default <%= componentName %>

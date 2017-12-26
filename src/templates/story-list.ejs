@@ -1,0 +1,27 @@
+import React from 'react';
+import { storiesOf } from '@storybook/react-native';
+import <%= componentName %> from './'
+
+const mockFetchActions = {
+  refetch: () => null,
+  fetchMore: () => null,
+}
+const mockFetchState = {
+  activelyRefetching: false,
+}
+
+const <%= arrayName %> = [{
+  id: '1',
+}, {
+  id: '2',
+}]
+
+storiesOf('<%= componentName %> Component', module)
+  .add('default', () => (
+    <<%= componentName %>
+      <%= arrayName %>={<%= arrayName %>}
+      onPressItem={() => {}}
+      fetchActions={mockFetchActions}
+      fetchState={mockFetchState}
+    />
+  ))

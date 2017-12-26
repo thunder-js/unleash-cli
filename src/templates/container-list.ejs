@@ -1,0 +1,35 @@
+import { QueryProps } from 'react-apollo'
+import { compose, withHandlers } from 'recompose'
+import { withPlaceholder, withApolloFetchState, withApolloFetchActions, withError, IFetchState, IFetchActions, withLoading } from 'common-data/artifacts/hocs'
+
+import ErrorComponent from '../../../global/components/Error'
+import ListPlaceholder from '../../../global/components/ListPlaceholder'
+import Loading from '../../../global/components/Loading'
+
+import <%= componentName %>, { I<%= entityName %> } from '../../components/<%= componentName %>'
+
+import with<%= componentName %>, { IWith<%= queryName %>WrappedProps } from '../../hocs/<%= hocFileName %>';
+
+type WrappedProps = IFetchActions & IFetchState & {
+  <%= arrayName %>: I<%= entityName %>[],
+  onPressItem: (event: I<%= entityName %>) => void,
+}
+
+const isError = (props) => !!props.error
+const isLoading = (props) => props.fetchState.initialLoading
+const isEmpty = (props) => !props.<%= arrayName %> || !props.<%= arrayName %>.length
+
+export default compose<WrappedProps, {}>(
+  //  Apollo
+  with<%= componentName %>,
+  //  Handlers
+  withHandlers({
+    onPressItem: () => (item: I<%= entityName %>) => null,
+  }),
+  //  Data
+  withApolloFetchActions(),
+  withApolloFetchState(),
+  withError<QueryProps>(isError, ErrorComponent),
+  withLoading<IFetchState>(isLoading, Loading),
+  withPlaceholder<IWith<%= queryName %>WrappedProps>(isEmpty, ListPlaceholder),
+)(<%= componentName %>)

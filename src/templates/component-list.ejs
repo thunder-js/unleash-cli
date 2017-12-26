@@ -1,0 +1,53 @@
+import * as React from 'react'
+import { View, FlatList, StyleSheet, ViewStyle } from 'react-native'
+import { IFetchState, IFetchActions } from 'common-data/artifacts/hocs'
+import <%= componentName %>Item from '../<%= componentName %>Item'
+
+export interface I<%= entityName %> {
+  id: string;
+}
+export interface I<%= componentName %>Props {
+  <%= arrayName %>: I<%= entityName %>[];
+  onPressItem: (item: I<%= entityName %>) => void;
+}
+
+class <%= componentName %> extends React.Component<IFetchActions & IFetchState & I<%= componentName %>Props> {
+  private keyExtractor = ({ id }) => id
+
+  private renderItem = ({ item }) => {
+    const { onPressItem } = this.props
+
+    return (
+      <<%= componentName %>Item
+        onPress={() => onPressItem(item)}
+        {...item}
+      />
+    )
+  }
+  public render() {
+    const {
+      fetchState,
+      fetchActions,
+      <%= arrayName %>,
+    } = this.props
+    return (
+      <View style={styles.container}>
+        <FlatList
+          data={<%= arrayName %>}
+          keyExtractor={this.keyExtractor}
+          renderItem={this.renderItem}
+          onRefresh={fetchActions.refetch}
+          refreshing={fetchState.activelyRefetching}
+        />
+      </View>
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  } as ViewStyle,
+})
+
+export default <%= componentName %>
