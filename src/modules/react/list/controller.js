@@ -1,9 +1,11 @@
 import path from 'path'
 import fs from 'fs-extra'
 import gql from 'graphql-tag';
+import pkgDir from 'pkg-dir'
 import { safelyRead, safelyWrite } from '../../common/files';
 import { render } from '../../common/template';
 import { spinner } from '../../common/ui';
+import { SRC_DIR } from '../../common/constants'
 import { extractSDL, getDocumentOperation, getDocumentQueryName } from '../../common/graphql';
 import { capitalizeFirst, camelToKebab } from '../../common/string';
 import { createHoc } from '../hoc/controller'
@@ -25,6 +27,13 @@ const getInfoFromGraphQLFile = async (filePath) => {
   }
 }
 
+const appendStory = (stories, newStoryPath) => `${stories}require('${newStoryPath}');\n`
+
+export const getStoriesFilePath = async (cwd) => {
+  const projectRootFolder = await pkgDir(cwd)
+  return projectRootFolder ? path.join(projectRootFolder, SRC_DIR, 'stories.js') : null
+}
+
 export const createListItem = async (queryPath) => {
   spinner.start('Creating list item')
   try {
@@ -43,7 +52,7 @@ export const createListItem = async (queryPath) => {
       componentName,
     })
     const renderedStory = await render('story-list-item', {
-      componentName
+      componentName,
     })
 
     const listFileName = 'index.tsx'
@@ -57,8 +66,22 @@ export const createListItem = async (queryPath) => {
     await safelyWrite(destFile, renderedList, true) //  TODO: force
     await safelyWrite(destStoryFile, renderedStory, true)
 
+    const storiesFilePath = await getStoriesFilePath(process.cwd())
+    const storiesFileContent = await safelyRead(storiesFilePath)
+    const newStoryRequirePath = `./modules/characters/components/${componentName}/stories`
+    const storyAlreadyRegistered = storiesFileContent.indexOf(newStoryRequirePath) !== -1
+    if (!storyAlreadyRegistered) {
+      const newStoriesFileContent = appendStory(storiesFileContent, newStoryRequirePath)
+      await safelyWrite(storiesFilePath, newStoriesFileContent, true)
+      spinner.succeed(`List Component Item Story appended to ${storiesFilePath}`)
+    } else {
+      spinner.info(`List Component Item Story ${newStoryRequirePath} already registered`)
+    }
+    
+
     spinner.succeed(`List Component Item created ${destFile}`)
     spinner.succeed(`List Component Item Story created ${destStoryFile}`)
+    
   } catch (err) {
     spinner.fail(err.toString())
   }
@@ -99,6 +122,19 @@ export const createList = async (queryPath) => {
     }
     await safelyWrite(destFile, renderedList, true) //  TODO: force
     await safelyWrite(destStoryFile, renderedStory, true)
+
+    const storiesFilePath = await getStoriesFilePath(process.cwd())
+    const storiesFileContent = await safelyRead(storiesFilePath)
+    const newStoryRequirePath = `./modules/characters/components/${componentName}/stories`
+    const storyAlreadyRegistered = storiesFileContent.indexOf(newStoryRequirePath) !== -1
+    if (!storyAlreadyRegistered) {
+      const newStoriesFileContent = appendStory(storiesFileContent, newStoryRequirePath)
+      await safelyWrite(storiesFilePath, newStoriesFileContent, true)
+      spinner.succeed(`List Component Story appended to ${storiesFilePath}`)
+    } else {
+      spinner.info(`List Component Story ${newStoryRequirePath} already registered`)
+    }
+
     spinner.succeed(`List Component created ${destFile}`)
     spinner.succeed(`List Component Story created ${destStoryFile}`)
   } catch (err) {
@@ -147,5 +183,8 @@ export const createContainer = async (queryPath) => {
 }
 
 export const createListPack = async (queryPath) => {
-  Promise.all([createList(queryPath), createListItem(queryPath), createContainer(queryPath), createHoc(queryPath, true)])
+  await createList(queryPath)
+  await createListItem(queryPath)
+  await createContainer(queryPath)
+  await createHoc(queryPath, true)
 }
