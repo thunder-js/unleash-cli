@@ -1,0 +1,14 @@
+	query allCharacters{
+    viewer {
+      test
+      allCharacters {
+        edges {
+          node {
+            id
+            name
+            age
+          }
+        }
+      }
+    }
+  }
