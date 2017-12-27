@@ -8,8 +8,11 @@ import { capitalizeFirst, camelToKebab } from '../../common/string';
 import { createHoc } from '../hoc/controller'
 import { getModuleName, getStoriesFilePath } from '../../common/folder-structure';
 import { getAppendedStoryFileContent } from '../../common/stories'
+import getModel from '../../common/types'
 
-export const createListItem = async (queryPath) => {
+const url = 'http://localhost:9002/graphql'
+
+export const createListItem = async (queryPath, graphQLUrl, searchPath) => {
   spinner.start('Creating list item')
   try {
     const {
@@ -22,9 +25,11 @@ export const createListItem = async (queryPath) => {
     }
 
     const componentName = `${capitalizeFirst(name)}ListItem`
+    const props = await getModel(name, searchPath, queryPath, url)
 
-    const renderedList = await render('component-list-item', {
+    const renderedListItem = await render('component-list-item', {
       componentName,
+      props,
     })
     const renderedStory = await render('story-list-item', {
       componentName,
@@ -39,7 +44,7 @@ export const createListItem = async (queryPath) => {
     if (!fs.existsSync(destFolder)) {
       await fs.mkdir(destFolder)
     }
-    await safelyWrite(destFile, renderedList, true) //  TODO: force
+    await safelyWrite(destFile, renderedListItem, true) //  TODO: force
     await safelyWrite(destStoryFile, renderedStory, true)
 
     const storiesFilePath = await getStoriesFilePath(process.cwd())
@@ -51,19 +56,19 @@ export const createListItem = async (queryPath) => {
       await safelyWrite(storiesFilePath, newStoriesFileContent, true)
       spinner.succeed(`List Component Item Story appended to ${storiesFilePath}`)
     } else {
-      spinner.info(`List Component Item Story ${newStoryRequirePath} already registered`)
+      spinner.warn(`List Component Item Story ${newStoryRequirePath} already registered`)
     }
-    
+
 
     spinner.succeed(`List Component Item created ${destFile}`)
     spinner.succeed(`List Component Item Story created ${destStoryFile}`)
-    
   } catch (err) {
     spinner.fail(err.toString())
+    console.log(err)
   }
 }
 
-export const createList = async (queryPath) => {
+export const createList = async (queryPath, graphQLUrl, searchPath) => {
   spinner.start('Creating list...')
   try {
     const {
@@ -76,11 +81,13 @@ export const createList = async (queryPath) => {
     }
 
     const componentName = `${capitalizeFirst(name)}List`
+    const props = await getModel(name, searchPath, queryPath, url)
 
     const renderedList = await render('component-list', {
       componentName,
       arrayName: name,
       entityName: 'Entity',
+      props,
     })
 
     const renderedStory = await render('story-list', {
@@ -135,7 +142,7 @@ export const createContainer = async (queryPath) => {
     const queryName = `${capitalizeFirst(name)}`
     const componentName = `${capitalizeFirst(name)}List`
     const hocFileName = `with-${camelToKebab(name)}`
-    
+
     const renderedList = await render('container-list', {
       componentName,
       hocFileName,
@@ -160,9 +167,10 @@ export const createContainer = async (queryPath) => {
 }
 
 
-export const createListPack = async (queryPath) => {
-  await createList(queryPath)
-  await createListItem(queryPath)
-  await createContainer(queryPath)
-  await createHoc(queryPath, true)
+export const createListPack = async (queryPath, graphQLUrl, searchPathString) => {
+  const searchPath = searchPathString.split('.')
+  await createList(queryPath, graphQLUrl, searchPath)
+  await createListItem(queryPath, graphQLUrl, searchPath)
+  await createContainer(queryPath, graphQLUrl, searchPath)
+  await createHoc(queryPath, graphQLUrl, searchPath)
 }

@@ -4,7 +4,10 @@ import { <%= queryName %>Query as I<%= interfaceName %>Query } from '../../../op
 import <%= queryName %> from '../queries/<%= queryFileName %>';
 
 export interface I<%= nodeType %> {
-  id: string,
+  <%_ for (var i = 0; i < props.length; i++) { -%>
+  <%_ var prop = props[i], key = prop.type.key, value = prop.type.value -%>
+  <%= key %>: <%= value -%>;
+  <%_} -%>
 }
 
 export interface IWith<%= interfaceName %>WrappedProps {

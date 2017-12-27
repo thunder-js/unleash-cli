@@ -4,7 +4,10 @@ import { IFetchState, IFetchActions } from 'common-data/artifacts/hocs'
 import <%= componentName %>Item from '../<%= componentName %>Item'
 
 export interface I<%= entityName %> {
-  id: string;
+  <%_ for (var i = 0; i < props.length; i++) { -%>
+  <%_ var prop = props[i], key = prop.type.key, value = prop.type.value -%>
+  <%= key %>: <%= value -%>;
+  <%_} -%>
 }
 export interface I<%= componentName %>Props {
   <%= arrayName %>: I<%= entityName %>[];

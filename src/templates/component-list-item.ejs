@@ -2,17 +2,26 @@ import React from 'react'
 import { View, Text, StyleSheet, ViewStyle, TextStyle, TouchableOpacity } from 'react-native'
 
 export interface I<%= componentName %>Props {
-  id: string;
+  <%_ for (var i = 0; i < props.length; i++) { -%>
+  <%_ var prop = props[i], key = prop.type.key, value = prop.type.value -%>
+  <%= key %>: <%= value -%>;
+  <%_} -%>
   onPress: () => void;
 }
 
 const <%= componentName %>: React.SFC<I<%= componentName %>Props> = ({
-  id,
+  <%_ for (var i = 0; i < props.length; i++) { -%>
+  <%_ var prop = props[i], name = prop.name -%>
+  <%= name %>,
+  <%_} -%>
   onPress,
 }) => (
   <View style={styles.container}>
     <TouchableOpacity onPress={onPress}>
-      <Text style={styles.text}>{id}</Text>
+    <%_ for (var i = 0; i < props.length; i++) { -%>
+    <%_ var prop = props[i], name = prop.name -%>
+      <Text style={styles.text}><%= name %>: {<%= name %>}</Text>
+    <%_} -%>
     </TouchableOpacity>
   </View>
 )

@@ -16,9 +16,13 @@ export default yargs => yargs
       type: 'string',
       describe: 'the name of the react list',
     })
-  }, (argv) => {
-    return createListPack(argv.name)
-  })
+      .option('graphql-url', {
+        alias: 'u',
+      })
+      .option('search-path', {
+        alias: 'p',
+      })
+  }, argv => createListPack(argv.name, argv.u, argv.p))
   .command('single [queryPath]', 'Unleash react single pack', (subYargs) => {
     subYargs.positional('queryPath', {
       type: 'string',
@@ -30,9 +34,13 @@ export default yargs => yargs
       type: 'string',
       describe: 'the queryPath of the react list',
     })
-  }, (argv) => {
-    return createHoc(argv.queryPath, true)
-  })
+      .option('graphql-url', {
+        alias: 'u',
+      })
+      .option('search-path', {
+        alias: 'p',
+      })
+  }, argv => createHoc(argv.queryPath, argv.u, argv.p))
   .command('component [name...]', 'Unleash react component', (subYargs) => {
     subYargs.positional('name', {
       type: 'string',

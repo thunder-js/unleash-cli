@@ -11,9 +11,8 @@ const defaultHeaders = {
   'Content-Type': 'application/json',
 };
 
-export default async function getSchema(url) {
+export default async (url) => {
   const headers = defaultHeaders
-  const agent = new https.Agent({ rejectUnauthorized: false })
 
   let result;
   try {
@@ -21,7 +20,6 @@ export default async function getSchema(url) {
       method: 'POST',
       headers,
       body: JSON.stringify({ query: introspectionQuery }),
-      agent,
     });
 
     result = await response.json();
