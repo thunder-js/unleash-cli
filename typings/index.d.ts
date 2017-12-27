@@ -1,0 +1,1 @@
+/// <reference path="pkg-dir.d.ts" />

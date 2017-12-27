@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "es2015",
+      "esnext.asynciterable"
+    ],
+    "target": "es2015",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "isolatedModules": false,
+    "noLib": false,
+    "outDir": "lib",
+    "rootDir": "src",
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false,
+    "preserveConstEnums": true,
+    "allowJs": true,
+    "sourceMap": true,
+    "noImplicitReturns": true,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true
+  },
+  "filesGlob": [
+    "typings/index.d.ts",
+    "src/**/*.ts",
+  ],
+  "types": [
+    "jest"
+  ],
+  "exclude": [
+    "lib",
+    "node_modules",
+    "resources"
+  ],
+  "compileOnSave": false
+}
