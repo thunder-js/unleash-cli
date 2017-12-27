@@ -39,6 +39,7 @@ export const createSinglePack = async (queryPath) => {
 
     const renderedComponent = await render('component-single', {
       componentName,
+      dataNamespace: queryName,
     })
   
     const renderedStory = await render('story-single', {

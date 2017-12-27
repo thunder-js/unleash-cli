@@ -2,11 +2,15 @@ import React from 'react'
 import { ViewStyle, View, Text, StyleSheet, TextStyle } from 'react-native'
 
 export interface I<%= componentName %>Props {
-  id: string
+  <%= dataNamespace %>: {
+    id: string;
+  }
 }
 
 const <%= componentName %>: React.SFC<I<%= componentName %>Props> = ({
-  id,
+  <%= dataNamespace %>: {
+    id,
+  },
 }) => (
   <View style={styles.container}>
     <Text style={styles.text}>{id}</Text>
