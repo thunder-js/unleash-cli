@@ -1,38 +1,13 @@
 import path from 'path'
 import fs from 'fs-extra'
-import gql from 'graphql-tag';
-import pkgDir from 'pkg-dir'
 import { safelyRead, safelyWrite } from '../../common/files';
 import { render } from '../../common/template';
 import { spinner } from '../../common/ui';
-import { SRC_DIR } from '../../common/constants'
-import { extractSDL, getDocumentOperation, getDocumentQueryName } from '../../common/graphql';
+import { getInfoFromGraphQLFile } from '../../common/graphql';
 import { capitalizeFirst, camelToKebab } from '../../common/string';
 import { createHoc } from '../hoc/controller'
-
-const getAbsolutePath = relativePath => path.join(process.cwd(), relativePath)
-
-const getInfoFromGraphQLFile = async (filePath) => {
-  const absolutePath = getAbsolutePath(filePath)
-  const fileContent = await safelyRead(absolutePath)
-  const sdl = extractSDL(fileContent)
-  const ast = gql`${sdl}`
-
-  const operation = getDocumentOperation(ast)
-  const name = getDocumentQueryName(ast)
-
-  return {
-    operation,
-    name,
-  }
-}
-
-const appendStory = (stories, newStoryPath) => `${stories}require('${newStoryPath}');\n`
-
-export const getStoriesFilePath = async (cwd) => {
-  const projectRootFolder = await pkgDir(cwd)
-  return projectRootFolder ? path.join(projectRootFolder, SRC_DIR, 'stories.js') : null
-}
+import { getModuleName, getStoriesFilePath } from '../../common/folder-structure';
+import { getAppendedStoryFileContent } from '../../common/stories'
 
 export const createListItem = async (queryPath) => {
   spinner.start('Creating list item')
@@ -59,6 +34,7 @@ export const createListItem = async (queryPath) => {
     const destFolder = path.join(queryPath, `../../components/${componentName}`)
     const destFile = path.join(destFolder, listFileName)
     const destStoryFile = path.join(destFolder, 'stories.tsx')
+    const moduleName = getModuleName(queryPath)
 
     if (!fs.existsSync(destFolder)) {
       await fs.mkdir(destFolder)
@@ -68,10 +44,10 @@ export const createListItem = async (queryPath) => {
 
     const storiesFilePath = await getStoriesFilePath(process.cwd())
     const storiesFileContent = await safelyRead(storiesFilePath)
-    const newStoryRequirePath = `./modules/characters/components/${componentName}/stories`
+    const newStoryRequirePath = `./modules/${moduleName}/components/${componentName}/stories`
     const storyAlreadyRegistered = storiesFileContent.indexOf(newStoryRequirePath) !== -1
     if (!storyAlreadyRegistered) {
-      const newStoriesFileContent = appendStory(storiesFileContent, newStoryRequirePath)
+      const newStoriesFileContent = getAppendedStoryFileContent(storiesFileContent, newStoryRequirePath)
       await safelyWrite(storiesFilePath, newStoriesFileContent, true)
       spinner.succeed(`List Component Item Story appended to ${storiesFilePath}`)
     } else {
@@ -116,6 +92,7 @@ export const createList = async (queryPath) => {
     const destFolder = path.join(queryPath, `../../components/${componentName}`)
     const destFile = path.join(destFolder, listFileName)
     const destStoryFile = path.join(destFolder, 'stories.tsx')
+    const moduleName = getModuleName(queryPath)
 
     if (!fs.existsSync(destFolder)) {
       await fs.mkdir(destFolder)
@@ -125,10 +102,10 @@ export const createList = async (queryPath) => {
 
     const storiesFilePath = await getStoriesFilePath(process.cwd())
     const storiesFileContent = await safelyRead(storiesFilePath)
-    const newStoryRequirePath = `./modules/characters/components/${componentName}/stories`
+    const newStoryRequirePath = `./modules/${moduleName}/components/${componentName}/stories`
     const storyAlreadyRegistered = storiesFileContent.indexOf(newStoryRequirePath) !== -1
     if (!storyAlreadyRegistered) {
-      const newStoriesFileContent = appendStory(storiesFileContent, newStoryRequirePath)
+      const newStoriesFileContent = getAppendedStoryFileContent(storiesFileContent, newStoryRequirePath)
       await safelyWrite(storiesFilePath, newStoriesFileContent, true)
       spinner.succeed(`List Component Story appended to ${storiesFilePath}`)
     } else {
@@ -181,6 +158,7 @@ export const createContainer = async (queryPath) => {
     spinner.fail(err.toString())
   }
 }
+
 
 export const createListPack = async (queryPath) => {
   await createList(queryPath)

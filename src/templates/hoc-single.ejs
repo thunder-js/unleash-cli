@@ -1,0 +1,27 @@
+import { graphql } from 'react-apollo'
+import { <%= queryName %>Query as IResponse } from '../../../operation-result-types'
+import <%= queryName %> from '../queries/single-character';
+import * as R from 'ramda';
+
+export interface I<%= entityName %> {
+  id: string,
+}
+
+export interface IWith<%= interfaceName %>Props {
+  id: string;
+}
+export interface IWith<%= interfaceName %>WrappedProps {
+  <%= queryName %>: I<%= entityName %>[],
+}
+
+export default graphql<IResponse, IWith<%= interfaceName %>Props, IWith<%= interfaceName %>WrappedProps>(<%= queryName %>, {
+  options: ({ id }) => ({
+    variables: {
+      id,
+    },
+  }),
+  props: (props) => ({
+    ...props,
+    <%= queryName %>: R.pathOr(null, ['viewer', '<%= graphqlField %>'], props.data),
+  }),
+})

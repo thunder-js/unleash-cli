@@ -1,0 +1,32 @@
+import { QueryProps } from 'react-apollo'
+import { compose, withHandlers } from 'recompose'
+import { withPlaceholder, withApolloFetchState, withApolloFetchActions, withError, IFetchState, withLoading } from 'common-data/artifacts/hocs'
+
+import ErrorComponent from '../../../global/components/Error'
+import ListPlaceholder from '../../../global/components/ListPlaceholder'
+import Loading from '../../../global/components/Loading'
+
+import <%= componentName %>, { I<%= interfaceName %>Props } from '../../components/<%= componentName %>'
+
+import <%= hocName %>, { IWith<%= interfaceName %>WrappedProps, IWith<%= interfaceName %>Props } from '../../hocs/<%= hocFileName %>';
+
+type IWrappedProps = I<%= interfaceName %>Props
+
+const isError = (props: QueryProps) => !!props.error
+const isLoading = (props: IFetchState) => props.fetchState.initialLoading
+const isEmpty = (props: IWith<%= interfaceName %>WrappedProps) => !props.singleCharacter
+
+export default compose<IWrappedProps, IWithSingleCharacterProps>(
+  //  Apollo
+  <%= hocName %>,
+  //  Handlers
+  withHandlers({
+
+  }),
+  //  Data
+  withApolloFetchActions(),
+  withApolloFetchState(),
+  withError(isError, ErrorComponent),
+  withLoading(isLoading, Loading),
+  withPlaceholder(isEmpty, ListPlaceholder),
+)(<%= componentName %>)
