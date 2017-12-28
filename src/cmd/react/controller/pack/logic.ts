@@ -58,8 +58,8 @@ export async function getListContainerFile(
     hocName: getHocName(definitionName),
     hocFileName: getHocFileName(definitionName),
     entityName: model.name,
-    arrayName: uncapitalizeFirst(definitionName),
-    interfaceName: capitalizeFirst(definitionName),
+    arrayName: getArrayName(definitionName),
+    interfaceName: getInterfaceName(definitionName),
   })
   const destPath = path.join(moduleFolder, FolderNames.containers, getListComponentName(definitionName), FileNames.component)
 
