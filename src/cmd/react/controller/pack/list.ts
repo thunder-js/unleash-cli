@@ -1,17 +1,16 @@
 import * as path from 'path'
-import { IContext } from '../../../../common/context'
 import chalk from 'chalk'
+import { IContext } from '../../../../common/context'
 import { safelyRead } from '../../../../services/fs/io'
 import { getDocumentNode } from '../../../../common/graphql/info'
 import { fetchInstrospectionSchema } from '../../../../services/graphql-endpoint/instrospection'
-import { assembleModel, IModel, IField } from '../../../../common/graphql/model'
+import { assembleModel, IModel } from '../../../../common/graphql/model'
 import { getSelectionsOfDefinitionByDefinitionName, getSelectionsByPath } from '../../../../common/graphql/document'
 import { getTypeByPath } from '../../../../common/graphql/instrospection-schema'
 import { IDispatchableFile } from '../../../../services/fs-dispatcher/types';
 import { getModuleNameByAbsolutePath, getModuleFolder } from '../../../../common/logic/folders'
 import { FolderNames, Templates, FileNames } from '../../../../common/constants'
-import { camelToKebab, uncapitalizeFirst } from '../../../../common/string'
-import { capitalizeFirst } from '../../../../modules/common/string';
+import { camelToKebab, uncapitalizeFirst, capitalizeFirst } from '../../../../common/string'
 import { render } from '../../../../common/template/render'
 
 export interface IOptions {
@@ -21,20 +20,25 @@ export interface IOptions {
   pathToEntity: string[],
 }
 
+const getListItemComponentFileName = (definitionName: string): string => `${capitalizeFirst(definitionName)}ListItem`
+const getInterfaceName = (definitionName: string): string => capitalizeFirst(definitionName)
+const getHocName = (definitionName: string): string => `with${capitalizeFirst(definitionName)}`
+const getHocFileName = (definitionName: string): string => `with-${camelToKebab(definitionName)}.ts`
+const getListComponentName = (definitionName: string): string => `${capitalizeFirst(definitionName)}List`
+const getArrayName = (definitionName: string): string => `${uncapitalizeFirst(definitionName)}`
+
 async function getListComponentFile(
   moduleFolder: string,
   definitionName: string,
   model: IModel,
 ): Promise<IDispatchableFile> {
-  const componentName = `${capitalizeFirst(definitionName)}List`
-
   const content = await render(Templates.list.component, {
-    componentName,
-    arrayName: `${uncapitalizeFirst(definitionName)}`,
+    componentName: getListComponentName(definitionName),
+    arrayName: getArrayName(definitionName),
     entityName: model.name,
     props: model.fields,
   })
-  const destPath = path.join(moduleFolder, FolderNames.components, componentName, FileNames.component)
+  const destPath = path.join(moduleFolder, FolderNames.components, getListComponentName(definitionName), FileNames.component)
   return {
     path: destPath,
     content,
@@ -43,60 +47,55 @@ async function getListComponentFile(
 
 async function getListStoryFile(
   moduleFolder: string,
-  componentName: string,
-  arrayName: string,
+  definitionName: string,
 ): Promise<IDispatchableFile> {
   const content = await render(Templates.list.story, {
-    componentName,
-    arrayName,
+    componentName: getListComponentName(definitionName),
+    arrayName: getArrayName(definitionName),
   })
-  const destPath = path.join(moduleFolder, FolderNames.components, componentName, FileNames.story)
+  const destPath = path.join(moduleFolder, FolderNames.components, getListComponentName(definitionName), FileNames.story)
 
   return {
     path: destPath,
     content,
   }
 }
+
 async function getListContainerFile(
   moduleFolder: string,
-  componentName: string,
-  hocFileName: string,
-  entityName: string,
-  queryName: string,
-  arrayName: string,
+  definitionName: string,
+  model: IModel,
 ): Promise<IDispatchableFile> {
   const content = await render(Templates.list.container, {
-    componentName,
-    hocFileName,
-    entityName,
-    queryName,
-    arrayName,
+    componentName: getListComponentName(definitionName),
+    hocName: getHocName(definitionName),
+    hocFileName: getHocFileName(definitionName),
+    entityName: model.name,
+    arrayName: uncapitalizeFirst(definitionName),
+    interfaceName: capitalizeFirst(definitionName),
   })
-  const destPath = path.join(moduleFolder, FolderNames.containers, componentName, FileNames.component)
+  const destPath = path.join(moduleFolder, FolderNames.containers, getListComponentName(definitionName), FileNames.component)
 
   return {
     path: destPath,
     content,
   }
 }
-const getHocFileName = (definitionName: string): string => `with-${camelToKebab(definitionName)}.ts`
 
 async function getListHocFile(
   moduleFolder: string,
-  definitionName: string,
   queryFileName: string,
-  interfaceName: string,
-  nodeType: string,
-  props: IField[],
+  definitionName: string,
+  model: IModel,
 ): Promise<IDispatchableFile> {
-  const content = await render(Templates.list.container, {
+  const content = await render(Templates.list.hoc, {
     definitionName,
     queryFileName,
-    interfaceName,
-    nodeType,
-    props,
+    interfaceName: getInterfaceName(definitionName),
+    entityName: model.name,
+    props: model.fields,
   })
-  const destPath = path.join(moduleFolder, FolderNames.containers, getHocFileName(definitionName))
+  const destPath = path.join(moduleFolder, FolderNames.hocs, getHocFileName(definitionName))
 
   return {
     path: destPath,
@@ -106,15 +105,14 @@ async function getListHocFile(
 
 async function getListItemComponentFile(
   moduleFolder: string,
-  componentName: string,
-  props: IField[],
+  definitionName: string,
+  model: IModel,
 ): Promise<IDispatchableFile> {
   const content = await render(Templates.listItem.component, {
-    componentName,
-    props,
+    componentName: getListItemComponentFileName(definitionName),
+    props: model.fields,
   })
-  const destPath = path.join(moduleFolder, FolderNames.containers, componentName, FileNames.component)
-
+  const destPath = path.join(moduleFolder, FolderNames.components, getListItemComponentFileName(definitionName), FileNames.component)
   return {
     path: destPath,
     content,
@@ -122,12 +120,12 @@ async function getListItemComponentFile(
 }
 async function getListItemStoryFile(
   moduleFolder: string,
-  componentName: string,
+  definitionName: string,
 ): Promise<IDispatchableFile> {
-  const content = await render(Templates.listItem.component, {
-    componentName,
+  const content = await render(Templates.listItem.story, {
+    componentName: getListItemComponentFileName(definitionName),
   })
-  const destPath = path.join(moduleFolder, FolderNames.containers, componentName, FileNames.story)
+  const destPath = path.join(moduleFolder, FolderNames.components, getListItemComponentFileName(definitionName), FileNames.story)
 
   return {
     path: destPath,
@@ -153,6 +151,7 @@ export default async (options: IOptions, { ui, fileDispatcher, cwd }: IContext) 
   const moduleFolder = await getModuleFolder(cwd, moduleName)
   const definitionName = pathToEntity[0]
   const selectionPath = pathToEntity.slice(1)
+  const graphQLFileName = path.basename(graphQLFilePath, '.ts')
 
   const graphQLFileData = await safelyRead(graphQLFilePath)
   const document = getDocumentNode(graphQLFileData)
@@ -172,38 +171,33 @@ export default async (options: IOptions, { ui, fileDispatcher, cwd }: IContext) 
   }
 
   const listComponentFile = await getListComponentFile(moduleFolder, definitionName, model)
-
-  // const listStoryFile = getListStoryFile()
-  // const listContainerFile = getListContainerFile()
-  // const listHocFile = getListHocFile()
-  // const listItemComponentFile = getListItemComponentFile()
-  // const listItemStoryFile = getListItemStoryFile()
-
-  // // const graphQLFileInfo = getGraphQLFileInfo(graphQLFileData)
-  // // console.log(graphQLFileInfo)
+  const listStoryFile = await getListStoryFile(moduleFolder, definitionName)
+  const listContainerFile = await getListContainerFile(moduleFolder, definitionName, model)
+  const listHocFile = await getListHocFile(moduleFolder, graphQLFileName, definitionName, model)
+  const listItemComponentFile = await getListItemComponentFile(moduleFolder, definitionName, model)
+  const listItemStoryFile = await getListItemStoryFile(moduleFolder, definitionName)
 
   ui.spinner.start('[ List-Pack ] Creating List Component ...')
   await fileDispatcher.dispatch(listComponentFile)
   ui.spinner.succeed()
 
-  // ui.spinner.start('[ List-Pack ] Creating List Story ...')
-  // await fileDispatcher.dispatch(listStoryFile)
-  // ui.spinner.succeed()
+  ui.spinner.start('[ List-Pack ] Creating List Story ...')
+  await fileDispatcher.dispatch(listStoryFile)
+  ui.spinner.succeed()
 
-  // ui.spinner.start('[ List-Pack ] Creating List Container ...')
-  // await fileDispatcher.dispatch(listContainerFile)
-  // ui.spinner.succeed()
+  ui.spinner.start('[ List-Pack ] Creating List Container ...')
+  await fileDispatcher.dispatch(listContainerFile)
+  ui.spinner.succeed()
 
-  // ui.spinner.start('[ List-Pack ] Creating List HOC ...')
-  // await fileDispatcher.dispatch(listHocFile)
-  // ui.spinner.succeed()
+  ui.spinner.start('[ List-Pack ] Creating List HOC ...')
+  await fileDispatcher.dispatch(listHocFile)
+  ui.spinner.succeed()
 
-  // ui.spinner.start('[ List-Pack ] Creating List Item Component ...')
-  // await fileDispatcher.dispatch(listItemComponentFile)
-  // ui.spinner.succeed()
+  ui.spinner.start('[ List-Pack ] Creating List Item Component ...')
+  await fileDispatcher.dispatch(listItemComponentFile)
+  ui.spinner.succeed()
 
-  // ui.spinner.start('[ List-Pack ] Creating List Item Story ...')
-  // await fileDispatcher.dispatch(listItemStoryFile)
-  // ui.spinner.succeed()
-
+  ui.spinner.start('[ List-Pack ] Creating List Item Story ...')
+  await fileDispatcher.dispatch(listItemStoryFile)
+  ui.spinner.succeed()
 }

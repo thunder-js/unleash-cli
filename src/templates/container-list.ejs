@@ -8,7 +8,7 @@ import Loading from '../../../global/components/Loading'
 
 import <%= componentName %>, { I<%= entityName %> } from '../../components/<%= componentName %>'
 
-import with<%= componentName %>, { IWith<%= queryName %>WrappedProps } from '../../hocs/<%= hocFileName %>';
+import <%= hocName %>, { IWith<%= interfaceName %>WrappedProps } from '../../hocs/<%= hocFileName %>';
 
 type WrappedProps = IFetchActions & IFetchState & {
   <%= arrayName %>: I<%= entityName %>[],
@@ -21,7 +21,7 @@ const isEmpty = (props) => !props.<%= arrayName %> || !props.<%= arrayName %>.le
 
 export default compose<WrappedProps, {}>(
   //  Apollo
-  with<%= componentName %>,
+  <%= hocName %>,
   //  Handlers
   withHandlers({
     onPressItem: () => (item: I<%= entityName %>) => null,
@@ -31,5 +31,5 @@ export default compose<WrappedProps, {}>(
   withApolloFetchState(),
   withError<QueryProps>(isError, ErrorComponent),
   withLoading<IFetchState>(isLoading, Loading),
-  withPlaceholder<IWith<%= queryName %>WrappedProps>(isEmpty, ListPlaceholder),
+  withPlaceholder<IWith<%= interfaceName %>WrappedProps>(isEmpty, ListPlaceholder),
 )(<%= componentName %>)

@@ -3,15 +3,15 @@ import { getEntitiesFromEdgesSafely } from 'common-data/artifacts/logic/relay'
 import { <%= definitionName %>Query as I<%= interfaceName %>Query } from '../../../operation-result-types'
 import <%= definitionName %> from '../queries/<%= queryFileName %>';
 
-export interface I<%= nodeType %> {
+export interface I<%= entityName %> {
   <%_ for (var i = 0; i < props.length; i++) { -%>
-  <%_ var prop = props[i], key = prop.type.key, value = prop.type.value -%>
+  <%_ var prop = props[i], key = prop.typescript.key, value = prop.typescript.value -%>
   <%= key %>: <%= value -%>;
   <%_} -%>
 }
 
 export interface IWith<%= interfaceName %>WrappedProps {
-  <%= definitionName %>: I<%= nodeType %>[],
+  <%= definitionName %>: I<%= entityName %>[],
 }
 
 export default graphql<I<%= interfaceName %>Query, {}, IWith<%= interfaceName %>WrappedProps>(<%= definitionName %>, {
