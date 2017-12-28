@@ -14,7 +14,6 @@ import { FolderNames, Templates, FileNames } from '../../../../common/constants'
 import { camelToKebab, uncapitalizeFirst, capitalizeFirst } from '../../../../common/string'
 import { render } from '../../../../common/template/render'
 import * as R from 'ramda'
-import { isNumber } from 'util';
 
 export interface IOptions {
   graphQLFilePath: string,
@@ -150,21 +149,6 @@ const displayInfo = (options: IOptions) => {
   log(chalk.grey('----------------------------------'))
 }
 
-const getType = (value: any) => {
-  if (isNumber(value)) {
-    return 'number'
-  }
-  if (value.indexOf('\n') !== -1) {
-    return 'multiline-string'
-  }
-  return 'string'
-}
-
-const mapObjectToPropsArray = (object) => Object.keys(object).map((key) => ({
-  key,
-  value: getType(object[key]) === 'multiline-string' ? object[key].replace(/\r/g, '') : object[key],
-  type: getType(object[key]),
-}))
 export default async (options: IOptions, { ui, fileDispatcher, cwd }: IContext) => {
   const { graphQLFilePath, force, graphQLUrl, pathToEntity} = options
   const moduleName = getModuleNameByAbsolutePath(graphQLFilePath)
@@ -174,33 +158,53 @@ export default async (options: IOptions, { ui, fileDispatcher, cwd }: IContext) 
   const moduleFolder = await getModuleFolder(cwd, moduleName)
   const definitionName = pathToEntity[0]
   const selectionPath = pathToEntity.slice(1)
-  const graphQLFileName = path.basename(graphQLFilePath, '.ts')
 
+  /**
+   * Document
+   */
+  const graphQLFileName = path.basename(graphQLFilePath, '.ts')
   const graphQLFileData = await safelyRead(graphQLFilePath)
   const query = await extractSDL(graphQLFileData)
   if (!query) {
     throw new Error(`Could not obtain query from ${graphQLFilePath}`)
   }
   const document = getDocumentNode(graphQLFileData)
-  const instrospectionSchema = await fetchInstrospectionSchema(graphQLUrl)
+  /**
+   * Selection
+   */
   const selectionsInsideDefinition = getSelectionsOfDefinitionByDefinitionName(definitionName, document.definitions)
   const selectionsByPath = getSelectionsByPath(selectionPath, selectionsInsideDefinition)
   if (!selectionsByPath) {
     throw new Error(`Could not obtain selections from ${pathToEntity}`)
   }
+  /**
+   * Instrospection schema
+   */
+  const instrospectionSchema = await fetchInstrospectionSchema(graphQLUrl)
   const instrospectionType = getTypeByPath(selectionPath, instrospectionSchema)
   if (!instrospectionType) {
     throw new Error(`Could not obtain instrospection type from ${pathToEntity}`)
   }
+  /**
+   * Assemble model
+   */
   const model = assembleModel(instrospectionType, selectionsByPath)
   if (!model) {
     throw new Error(`Could not obtain model.`)
   }
-
+  /**
+   * Fetch data
+   */
   const fetchedData = await requestGraphQL(graphQLUrl, query)
+  if (!fetchedData) {
+    throw new Error(`Could not obtain data from ${graphQLUrl}`)
+  }
   const pathToArray = pathToEntity.slice(1, -1)
   const entityArrayData = R.pathOr([], pathToArray, fetchedData).map((edge: {node: any}) => edge.node)
 
+  /**
+   * Render files
+   */
   const listComponentFile = await getListComponentFile(moduleFolder, definitionName, model)
   const listStoryFile = await getListStoryFile(moduleFolder, definitionName, entityArrayData)
   const listContainerFile = await getListContainerFile(moduleFolder, definitionName, model)
@@ -208,6 +212,9 @@ export default async (options: IOptions, { ui, fileDispatcher, cwd }: IContext) 
   const listItemComponentFile = await getListItemComponentFile(moduleFolder, definitionName, model)
   const listItemStoryFile = await getListItemStoryFile(moduleFolder, definitionName, entityArrayData[0])
 
+  /**
+   * Dispatch files
+   */
   ui.spinner.start('[ List-Pack ] Creating List Component ...')
   await fileDispatcher.dispatch(listComponentFile)
   ui.spinner.succeed()
