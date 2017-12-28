@@ -3,13 +3,19 @@ import { ViewStyle, View, Text, StyleSheet, TextStyle } from 'react-native'
 
 export interface I<%= componentName %>Props {
   <%= dataNamespace %>: {
-    id: string;
+    <%_ for (var i = 0; i < props.length; i++) { -%>
+    <%_ var prop = props[i], key = prop.typescript.key, value = prop.typescript.value -%>
+    <%= key %>: <%= value -%>;
+    <%_} -%>
   }
 }
 
 const <%= componentName %>: React.SFC<I<%= componentName %>Props> = ({
   <%= dataNamespace %>: {
-    id,
+    <%_ for (var i = 0; i < props.length; i++) { -%>
+    <%_ var prop = props[i], name = prop.name -%>
+    <%= name %>,
+    <%_} -%>
   },
 }) => (
   <View style={styles.container}>

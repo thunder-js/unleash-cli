@@ -11,6 +11,7 @@ export const getHocName = (definitionName: string): string => `with${capitalizeF
 export const getHocFileName = (definitionName: string): string => `with-${camelToKebab(definitionName)}.ts`
 export const getListComponentName = (definitionName: string): string => `${capitalizeFirst(definitionName)}List`
 export const getArrayName = (definitionName: string): string => `${uncapitalizeFirst(definitionName)}`
+export const getSingleComponentFileName = (definitionName: string): string => `${capitalizeFirst(definitionName)}`
 
 export async function getListComponentFile(
   moduleFolder: string,
@@ -123,21 +124,9 @@ export async function getListItemStoryFile(
     content,
   }
 }
-// export async function getAppendedListItemStoryFile(
-//   moduleFolder: string,
-//   definitionName: string,
-//   fakeData: any,
-//   storiesFilePath: string,
-//   storiesFileContent: string,
-//   moduleName: string,
-// ): Promise<IDispatchableFile[]> {
-//   const listItemStoryFile = await getListItemStoryFile(moduleFolder, definitionName, fakeData)
-//   const storiesFile = await getAppendedStoryFile(storiesFilePath, storiesFileContent, moduleName, getListItemComponentFileName(definitionName))
-//   return [listItemStoryFile, storiesFile]
-// }
 
 export const getAppendedStoryFileContent = (stories, newStoryPath) => `${stories}require('${newStoryPath}');\n`
-export const getStoryRequirePath = (moduleName: string, componentName: string) => `./modules/${moduleName}/components/${componentName}/stories`
+export const getStoryRequirePath = (moduleName: string, componentName: string) => `./modules/${moduleName}/components/${componentName}/${path.basename(FileNames.stories, '.ts')}`
 export const isStoryAlreadyRegistered = (moduleName: string, componentName: string, storiesFileContent: string) => {
   return storiesFileContent.indexOf(getStoryRequirePath(moduleName, componentName)) !== -1
 }
@@ -160,7 +149,6 @@ export async function getAppendedStoryFile(
     content: appendedStoryFileContent,
   }
 }
-
 
 export const getStoriesToAppend = (moduleName: string, components: string[], storiesFileContent: string) => {
   return components.reduce((stories, component) => {

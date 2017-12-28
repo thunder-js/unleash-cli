@@ -1,1 +1,13 @@
-//  This is the story for <%= componentName %>
+import React from 'react';
+import { storiesOf } from '@storybook/react-native';
+import <%= componentName %> from './'
+import { View } from 'react-native'
+
+const data = <%- JSON.stringify(data, null, 2).replace(/"/g, '\'') %>
+
+storiesOf('<%= componentName %> Component', module)
+  .add('default', () => (
+    <<%= componentName %>
+      <%= dataNamespace %>={data}
+    />
+  ))

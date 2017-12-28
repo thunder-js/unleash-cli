@@ -19,9 +19,16 @@ export const Templates = {
     hoc: 'hoc',
     container: 'container-list',
   },
+  single: {
+    component: 'component-single',
+    story: 'story-single',
+    hoc: 'hoc-single',
+    container: 'container-single',
+  },
 }
 
 export const FileNames = {
+  container: 'index.tsx',
   component: 'index.tsx',
   story: 'stories.tsx',
   stories: 'stories.js',

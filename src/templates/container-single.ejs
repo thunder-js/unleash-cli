@@ -16,7 +16,7 @@ const isError = (props: QueryProps) => !!props.error
 const isLoading = (props: IFetchState) => props.fetchState.initialLoading
 const isEmpty = (props: IWith<%= interfaceName %>WrappedProps) => !props.singleCharacter
 
-export default compose<IWrappedProps, IWithSingleCharacterProps>(
+export default compose<IWrappedProps, IWith<%= interfaceName %>Props>(
   //  Apollo
   <%= hocName %>,
   //  Handlers

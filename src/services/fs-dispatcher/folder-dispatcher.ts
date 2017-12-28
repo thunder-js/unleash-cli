@@ -17,7 +17,8 @@ export interface IOptions {
 
 const createDispatchableFolder = async (folder: IDispatchableFolder, options: IOptions): Promise<any> => {
   if (!options.force && fs.existsSync(folder.path)) {
-    throw new Error(`Folder ${folder.path} already exists`)
+    return;
+    // throw new Error(`Folder ${folder.path} already exists`)
   }
 
   if (folder.p) {

@@ -1,14 +1,13 @@
 import { Argv } from 'yargs';
 import { createModule } from './controller/module';
 import { createComponent as createListComponent } from './controller/list/index'
-import { createList as createPackList } from './controller/pack/index'
+import { createList as createPackList, createSingle as createPackSingle } from './controller/pack/index'
 import { getErrorHandler } from '../../common/handle-errors'
 import * as R from 'ramda'
 import context from '../../common/context'
 import * as path from 'path'
 
 const catchErrors = getErrorHandler(context)
-
 
 const withForce = (argv: Argv): Argv => argv.option('force', {
   alias: 'f',
@@ -66,17 +65,37 @@ export default (yargs: Argv) => yargs
     graphQLUrl: argv.g,
     pathToEntity: argv.p,
   }, context)))
-  .command('pack-single <queryPath>', 'Unleash react list component', (subYargs: Argv) => {
-    return subYargs.positional('queryPath', {
+  .command('pack-single <graphql-file>', 'Unleash react single pack', (subYargs: Argv) => {
+    return subYargs.options({
+      'force': {
+        alias: 'f',
+        type: 'boolean',
+        describe: 'should force',
+      },
+      'graphql-url': {
+        alias: 'g',
+        type: 'string',
+        describe: 'graphql query endpoint',
+        demandOption: true,
+      },
+      'path-to-entity': {
+        alias: 'p',
+        type: 'string',
+        describe: 'path to entity inside graphQL query',
+        demandOption: true,
+        coerce: (p) => p.split('.'),
+      },
+    }).positional('graphql-file', {
       type: 'string',
       describe: 'path to graphQL query',
+      coerce: (d) => path.resolve(process.cwd(), d),
     })
   },
-  catchErrors((argv) => createPackList({
-    graphQLFilePath: argv['graphql-document-path'],
-    force: argv.force,
+  catchErrors((argv) => createPackSingle({
+    graphQLFilePath: argv['graphql-file'],
+    force: argv.f,
     graphQLUrl: argv.g,
-    pathToEntity: argv.p.split('.'),
+    pathToEntity: argv.p,
   }, context)))
   .command('list <name>', 'Unleash react list component', (subYargs: Argv) => {
     return subYargs.positional('name', {

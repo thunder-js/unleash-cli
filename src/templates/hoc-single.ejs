@@ -1,17 +1,20 @@
 import { graphql } from 'react-apollo'
 import { <%= queryName %>Query as IResponse } from '../../../operation-result-types'
-import <%= queryName %> from '../queries/single-character';
+import <%= queryName %> from '../queries/<%= queryFileName %>';
 import * as R from 'ramda';
 
 export interface I<%= entityName %> {
-  id: string,
+  <%_ for (var i = 0; i < props.length; i++) { -%>
+  <%_ var prop = props[i], key = prop.typescript.key, value = prop.typescript.value -%>
+  <%= key %>: <%= value -%>;
+  <%_} -%>
 }
 
 export interface IWith<%= interfaceName %>Props {
   id: string;
 }
 export interface IWith<%= interfaceName %>WrappedProps {
-  <%= queryName %>: I<%= entityName %>[],
+  <%= dataNamespace %>: I<%= entityName %>,
 }
 
 export default graphql<IResponse, IWith<%= interfaceName %>Props, IWith<%= interfaceName %>WrappedProps>(<%= queryName %>, {
@@ -22,6 +25,6 @@ export default graphql<IResponse, IWith<%= interfaceName %>Props, IWith<%= inter
   }),
   props: (props) => ({
     ...props,
-    <%= queryName %>: R.pathOr(null, ['viewer', '<%= graphqlField %>'], props.data),
+    <%= dataNamespace %>: R.pathOr(null, <%- JSON.stringify(pathToEntity).replace(/"/g, '\'') %>, props.data),
   }),
 })
