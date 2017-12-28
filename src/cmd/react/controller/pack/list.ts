@@ -2,8 +2,9 @@ import * as path from 'path'
 import chalk from 'chalk'
 import { IContext } from '../../../../common/context'
 import { safelyRead } from '../../../../services/fs/io'
-import { getDocumentNode } from '../../../../common/graphql/info'
+import { getDocumentNode, extractSDL } from '../../../../common/graphql/info'
 import { fetchInstrospectionSchema } from '../../../../services/graphql-endpoint/instrospection'
+import { requestGraphQL } from '../../../../services/graphql-endpoint/query'
 import { assembleModel, IModel } from '../../../../common/graphql/model'
 import { getSelectionsOfDefinitionByDefinitionName, getSelectionsByPath } from '../../../../common/graphql/document'
 import { getTypeByPath } from '../../../../common/graphql/instrospection-schema'
@@ -12,6 +13,8 @@ import { getModuleNameByAbsolutePath, getModuleFolder } from '../../../../common
 import { FolderNames, Templates, FileNames } from '../../../../common/constants'
 import { camelToKebab, uncapitalizeFirst, capitalizeFirst } from '../../../../common/string'
 import { render } from '../../../../common/template/render'
+import * as R from 'ramda'
+import { isNumber } from 'util';
 
 export interface IOptions {
   graphQLFilePath: string,
@@ -48,10 +51,12 @@ async function getListComponentFile(
 async function getListStoryFile(
   moduleFolder: string,
   definitionName: string,
+  fakeDataArray: any,
 ): Promise<IDispatchableFile> {
   const content = await render(Templates.list.story, {
     componentName: getListComponentName(definitionName),
     arrayName: getArrayName(definitionName),
+    fakeDataArray,
   })
   const destPath = path.join(moduleFolder, FolderNames.components, getListComponentName(definitionName), FileNames.story)
 
@@ -121,9 +126,11 @@ async function getListItemComponentFile(
 async function getListItemStoryFile(
   moduleFolder: string,
   definitionName: string,
+  fakeData: Array<{key: string, value: string}>,
 ): Promise<IDispatchableFile> {
   const content = await render(Templates.listItem.story, {
     componentName: getListItemComponentFileName(definitionName),
+    fakeData,
   })
   const destPath = path.join(moduleFolder, FolderNames.components, getListItemComponentFileName(definitionName), FileNames.story)
 
@@ -142,6 +149,22 @@ const displayInfo = (options: IOptions) => {
   log(`${chalk.grey('Path to Entity:')} ${chalk.green(options.pathToEntity.join('.'))}`)
   log(chalk.grey('----------------------------------'))
 }
+
+const getType = (value: any) => {
+  if (isNumber(value)) {
+    return 'number'
+  }
+  if (value.indexOf('\n') !== -1) {
+    return 'multiline-string'
+  }
+  return 'string'
+}
+
+const mapObjectToPropsArray = (object) => Object.keys(object).map((key) => ({
+  key,
+  value: getType(object[key]) === 'multiline-string' ? object[key].replace(/\r/g, '') : object[key],
+  type: getType(object[key]),
+}))
 export default async (options: IOptions, { ui, fileDispatcher, cwd }: IContext) => {
   const { graphQLFilePath, force, graphQLUrl, pathToEntity} = options
   const moduleName = getModuleNameByAbsolutePath(graphQLFilePath)
@@ -154,6 +177,10 @@ export default async (options: IOptions, { ui, fileDispatcher, cwd }: IContext) 
   const graphQLFileName = path.basename(graphQLFilePath, '.ts')
 
   const graphQLFileData = await safelyRead(graphQLFilePath)
+  const query = await extractSDL(graphQLFileData)
+  if (!query) {
+    throw new Error(`Could not obtain query from ${graphQLFilePath}`)
+  }
   const document = getDocumentNode(graphQLFileData)
   const instrospectionSchema = await fetchInstrospectionSchema(graphQLUrl)
   const selectionsInsideDefinition = getSelectionsOfDefinitionByDefinitionName(definitionName, document.definitions)
@@ -170,12 +197,17 @@ export default async (options: IOptions, { ui, fileDispatcher, cwd }: IContext) 
     throw new Error(`Could not obtain model.`)
   }
 
+  const data = await requestGraphQL(graphQLUrl, query)
+  const pathToArray = pathToEntity.slice(1, -1)
+  const arrayData = R.pathOr([], pathToArray, data).map((edge) => edge.node)
+  const singleData = mapObjectToPropsArray(arrayData[0])
+
   const listComponentFile = await getListComponentFile(moduleFolder, definitionName, model)
-  const listStoryFile = await getListStoryFile(moduleFolder, definitionName)
+  const listStoryFile = await getListStoryFile(moduleFolder, definitionName, arrayData)
   const listContainerFile = await getListContainerFile(moduleFolder, definitionName, model)
   const listHocFile = await getListHocFile(moduleFolder, graphQLFileName, definitionName, model)
   const listItemComponentFile = await getListItemComponentFile(moduleFolder, definitionName, model)
-  const listItemStoryFile = await getListItemStoryFile(moduleFolder, definitionName)
+  const listItemStoryFile = await getListItemStoryFile(moduleFolder, definitionName, singleData)
 
   ui.spinner.start('[ List-Pack ] Creating List Component ...')
   await fileDispatcher.dispatch(listComponentFile)

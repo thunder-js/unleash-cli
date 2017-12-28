@@ -10,11 +10,7 @@ const mockFetchState = {
   activelyRefetching: false,
 }
 
-const <%= arrayName %> = [{
-  id: '1',
-}, {
-  id: '2',
-}]
+const <%= arrayName %> = <%- JSON.stringify(fakeDataArray, null, 2) %>
 
 storiesOf('<%= componentName %> Component', module)
   .add('default', () => (

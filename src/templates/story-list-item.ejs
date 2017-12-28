@@ -6,7 +6,18 @@ import { View } from 'react-native'
 storiesOf('<%= componentName %> Component', module)
   .add('default', () => (
     <<%= componentName %>
-      id='1'
+      <%_ for (var i = 0; i < fakeData.length; i++) { -%>
+      <%_ var prop = fakeData[i], key = prop.key, value = prop.value, type = prop.type -%>
+      <%_ if (type === 'number') {-%>
+      <%=key%>={<%= value -%>}
+      <%_} -%>
+      <%_ if (type === 'multiline-string') {-%>
+      <%=key%>={`<%= value -%>`}
+      <%_} -%>
+      <%_ if (type === 'string') {-%>
+      <%=key%>='<%= value -%>'
+      <%_} -%>
+      <%_} -%>
       onPress={() => {}}
     />
   ))

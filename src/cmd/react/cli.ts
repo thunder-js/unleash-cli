@@ -9,6 +9,7 @@ import * as path from 'path'
 
 const catchErrors = getErrorHandler(context)
 
+
 const withForce = (argv: Argv): Argv => argv.option('force', {
   alias: 'f',
   type: 'boolean',
@@ -33,7 +34,7 @@ const withPathToEntity = (argv: Argv): Argv => argv.option('path-to-entity', {
 })
 
 export default (yargs: Argv) => yargs
-  .command('pack-list <queryPath>', 'Unleash react list component', (argv: Argv) => {
+  .command('pack-list <graphql-file>', 'Unleash react list component', (argv: Argv) => {
     return argv.options({
       'force': {
         alias: 'f',
@@ -46,13 +47,6 @@ export default (yargs: Argv) => yargs
         describe: 'graphql query endpoint',
         demandOption: true,
       },
-      'graphql-document': {
-        alias: 'd',
-        type: 'string',
-        describe: 'path to graphQL query',
-        demandOption: true,
-        coerce: (d) => path.resolve(process.cwd(), d),
-      },
       'path-to-entity': {
         alias: 'p',
         type: 'string',
@@ -60,10 +54,14 @@ export default (yargs: Argv) => yargs
         demandOption: true,
         coerce: (p) => p.split('.'),
       },
+    }).positional('graphql-file', {
+      type: 'string',
+      describe: 'path to graphQL query',
+      coerce: (d) => path.resolve(process.cwd(), d),
     })
   },
   catchErrors((argv) => createPackList({
-    graphQLFilePath: argv.d,
+    graphQLFilePath: argv['graphql-file'],
     force: argv.f,
     graphQLUrl: argv.g,
     pathToEntity: argv.p,
