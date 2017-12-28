@@ -3,21 +3,12 @@ import { storiesOf } from '@storybook/react-native';
 import <%= componentName %> from './'
 import { View } from 'react-native'
 
+const data = <%- JSON.stringify(fakeData, null, 2) %>
+
 storiesOf('<%= componentName %> Component', module)
   .add('default', () => (
     <<%= componentName %>
-      <%_ for (var i = 0; i < fakeData.length; i++) { -%>
-      <%_ var prop = fakeData[i], key = prop.key, value = prop.value, type = prop.type -%>
-      <%_ if (type === 'number') {-%>
-      <%=key%>={<%= value -%>}
-      <%_} -%>
-      <%_ if (type === 'multiline-string') {-%>
-      <%=key%>={`<%= value -%>`}
-      <%_} -%>
-      <%_ if (type === 'string') {-%>
-      <%=key%>='<%= value -%>'
-      <%_} -%>
-      <%_} -%>
+      {...data}
       onPress={() => {}}
     />
   ))

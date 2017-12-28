@@ -21,3 +21,19 @@ storiesOf('<%= componentName %> Component', module)
       fetchState={mockFetchState}
     />
   ))
+
+
+/*
+      <%_ for (var i = 0; i < fakeData.length; i++) { -%>
+      <%_ var prop = fakeData[i], key = prop.key, value = prop.value, type = prop.type -%>
+      <%_ if (type === 'number') {-%>
+      <%=key%>={<%= value -%>}
+      <%_} -%>
+      <%_ if (type === 'multiline-string') {-%>
+      <%=key%>={`<%= value -%>`}
+      <%_} -%>
+      <%_ if (type === 'string') {-%>
+      <%=key%>='<%= value -%>'
+      <%_} -%>
+      <%_} -%>
+      */

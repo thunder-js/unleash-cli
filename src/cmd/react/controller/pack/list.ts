@@ -126,7 +126,7 @@ async function getListItemComponentFile(
 async function getListItemStoryFile(
   moduleFolder: string,
   definitionName: string,
-  fakeData: Array<{key: string, value: string}>,
+  fakeData: any,
 ): Promise<IDispatchableFile> {
   const content = await render(Templates.listItem.story, {
     componentName: getListItemComponentFileName(definitionName),
@@ -197,17 +197,16 @@ export default async (options: IOptions, { ui, fileDispatcher, cwd }: IContext) 
     throw new Error(`Could not obtain model.`)
   }
 
-  const data = await requestGraphQL(graphQLUrl, query)
+  const fetchedData = await requestGraphQL(graphQLUrl, query)
   const pathToArray = pathToEntity.slice(1, -1)
-  const arrayData = R.pathOr([], pathToArray, data).map((edge) => edge.node)
-  const singleData = mapObjectToPropsArray(arrayData[0])
+  const entityArrayData = R.pathOr([], pathToArray, fetchedData).map((edge: {node: any}) => edge.node)
 
   const listComponentFile = await getListComponentFile(moduleFolder, definitionName, model)
-  const listStoryFile = await getListStoryFile(moduleFolder, definitionName, arrayData)
+  const listStoryFile = await getListStoryFile(moduleFolder, definitionName, entityArrayData)
   const listContainerFile = await getListContainerFile(moduleFolder, definitionName, model)
   const listHocFile = await getListHocFile(moduleFolder, graphQLFileName, definitionName, model)
   const listItemComponentFile = await getListItemComponentFile(moduleFolder, definitionName, model)
-  const listItemStoryFile = await getListItemStoryFile(moduleFolder, definitionName, singleData)
+  const listItemStoryFile = await getListItemStoryFile(moduleFolder, definitionName, entityArrayData[0])
 
   ui.spinner.start('[ List-Pack ] Creating List Component ...')
   await fileDispatcher.dispatch(listComponentFile)
