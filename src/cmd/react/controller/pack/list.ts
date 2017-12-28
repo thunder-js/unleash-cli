@@ -8,12 +8,17 @@ import { requestGraphQL } from '../../../../services/graphql-endpoint/query'
 import { assembleModel, IModel } from '../../../../common/graphql/model'
 import { getSelectionsOfDefinitionByDefinitionName, getSelectionsByPath } from '../../../../common/graphql/document'
 import { getTypeByPath } from '../../../../common/graphql/instrospection-schema'
-import { IDispatchableFile } from '../../../../services/fs-dispatcher/types';
 import { getModuleNameByAbsolutePath, getModuleFolder } from '../../../../common/logic/folders'
-import { FolderNames, Templates, FileNames } from '../../../../common/constants'
-import { camelToKebab, uncapitalizeFirst, capitalizeFirst } from '../../../../common/string'
-import { render } from '../../../../common/template/render'
 import * as R from 'ramda'
+import {
+  getListComponentFile,
+  getListStoryFile,
+  getListContainerFile,
+  getListHocFile,
+  getListItemComponentFile,
+  getListItemStoryFile,
+} from './logic'
+import UI from '../../../../services/ui/ui';
 
 export interface IOptions {
   graphQLFilePath: string,
@@ -22,135 +27,20 @@ export interface IOptions {
   pathToEntity: string[],
 }
 
-const getListItemComponentFileName = (definitionName: string): string => `${capitalizeFirst(definitionName)}ListItem`
-const getInterfaceName = (definitionName: string): string => capitalizeFirst(definitionName)
-const getHocName = (definitionName: string): string => `with${capitalizeFirst(definitionName)}`
-const getHocFileName = (definitionName: string): string => `with-${camelToKebab(definitionName)}.ts`
-const getListComponentName = (definitionName: string): string => `${capitalizeFirst(definitionName)}List`
-const getArrayName = (definitionName: string): string => `${uncapitalizeFirst(definitionName)}`
-
-async function getListComponentFile(
-  moduleFolder: string,
-  definitionName: string,
-  model: IModel,
-): Promise<IDispatchableFile> {
-  const content = await render(Templates.list.component, {
-    componentName: getListComponentName(definitionName),
-    arrayName: getArrayName(definitionName),
-    entityName: model.name,
-    props: model.fields,
-  })
-  const destPath = path.join(moduleFolder, FolderNames.components, getListComponentName(definitionName), FileNames.component)
-  return {
-    path: destPath,
-    content,
-  }
-}
-
-async function getListStoryFile(
-  moduleFolder: string,
-  definitionName: string,
-  fakeDataArray: any,
-): Promise<IDispatchableFile> {
-  const content = await render(Templates.list.story, {
-    componentName: getListComponentName(definitionName),
-    arrayName: getArrayName(definitionName),
-    fakeDataArray,
-  })
-  const destPath = path.join(moduleFolder, FolderNames.components, getListComponentName(definitionName), FileNames.story)
-
-  return {
-    path: destPath,
-    content,
-  }
-}
-
-async function getListContainerFile(
-  moduleFolder: string,
-  definitionName: string,
-  model: IModel,
-): Promise<IDispatchableFile> {
-  const content = await render(Templates.list.container, {
-    componentName: getListComponentName(definitionName),
-    hocName: getHocName(definitionName),
-    hocFileName: getHocFileName(definitionName),
-    entityName: model.name,
-    arrayName: uncapitalizeFirst(definitionName),
-    interfaceName: capitalizeFirst(definitionName),
-  })
-  const destPath = path.join(moduleFolder, FolderNames.containers, getListComponentName(definitionName), FileNames.component)
-
-  return {
-    path: destPath,
-    content,
-  }
-}
-
-async function getListHocFile(
-  moduleFolder: string,
-  queryFileName: string,
-  definitionName: string,
-  model: IModel,
-): Promise<IDispatchableFile> {
-  const content = await render(Templates.list.hoc, {
-    definitionName,
-    queryFileName,
-    interfaceName: getInterfaceName(definitionName),
-    entityName: model.name,
-    props: model.fields,
-  })
-  const destPath = path.join(moduleFolder, FolderNames.hocs, getHocFileName(definitionName))
-
-  return {
-    path: destPath,
-    content,
-  }
-}
-
-async function getListItemComponentFile(
-  moduleFolder: string,
-  definitionName: string,
-  model: IModel,
-): Promise<IDispatchableFile> {
-  const content = await render(Templates.listItem.component, {
-    componentName: getListItemComponentFileName(definitionName),
-    props: model.fields,
-  })
-  const destPath = path.join(moduleFolder, FolderNames.components, getListItemComponentFileName(definitionName), FileNames.component)
-  return {
-    path: destPath,
-    content,
-  }
-}
-async function getListItemStoryFile(
-  moduleFolder: string,
-  definitionName: string,
-  fakeData: any,
-): Promise<IDispatchableFile> {
-  const content = await render(Templates.listItem.story, {
-    componentName: getListItemComponentFileName(definitionName),
-    fakeData,
-  })
-  const destPath = path.join(moduleFolder, FolderNames.components, getListItemComponentFileName(definitionName), FileNames.story)
-
-  return {
-    path: destPath,
-    content,
-  }
-}
-
-const log = (text: string) => console.log(text)
-
-const displayInfo = (options: IOptions) => {
-  log(chalk.grey('----------------------------------'))
-  log(`${chalk.grey('GraphQL Document Path:')} ${chalk.green(options.graphQLFilePath)}`)
-  log(`${chalk.grey('GraphQL Endpoint:')} ${chalk.green(options.graphQLUrl)}`)
-  log(`${chalk.grey('Path to Entity:')} ${chalk.green(options.pathToEntity.join('.'))}`)
-  log(chalk.grey('----------------------------------'))
+const displayInfo = (options: IOptions, ui: UI) => {
+  ui.log(chalk.grey('----------------------------------'))
+  ui.log(`${chalk.grey('GraphQL Document Path:')} ${chalk.green(options.graphQLFilePath)}`)
+  ui.log(`${chalk.grey('GraphQL Endpoint:')} ${chalk.green(options.graphQLUrl)}`)
+  ui.log(`${chalk.grey('Path to Entity:')} ${chalk.green(options.pathToEntity.join('.'))}`)
+  ui.log(chalk.grey('----------------------------------'))
 }
 
 export default async (options: IOptions, { ui, fileDispatcher, cwd }: IContext) => {
   const { graphQLFilePath, force, graphQLUrl, pathToEntity} = options
+  displayInfo(options, ui)
+  /**
+   * Basic info
+   */
   const moduleName = getModuleNameByAbsolutePath(graphQLFilePath)
   if (!moduleName) {
     throw new Error('Could not define module')
