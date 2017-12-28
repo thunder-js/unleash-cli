@@ -1,7 +1,7 @@
 import { graphql } from 'react-apollo'
 import { getEntitiesFromEdgesSafely } from 'common-data/artifacts/logic/relay'
-import { <%= queryName %>Query as I<%= interfaceName %>Query } from '../../../operation-result-types'
-import <%= queryName %> from '../queries/<%= queryFileName %>';
+import { <%= definitionName %>Query as I<%= interfaceName %>Query } from '../../../operation-result-types'
+import <%= definitionName %> from '../queries/<%= queryFileName %>';
 
 export interface I<%= nodeType %> {
   <%_ for (var i = 0; i < props.length; i++) { -%>
@@ -11,15 +11,15 @@ export interface I<%= nodeType %> {
 }
 
 export interface IWith<%= interfaceName %>WrappedProps {
-  <%= queryName %>: I<%= nodeType %>[],
+  <%= definitionName %>: I<%= nodeType %>[],
 }
 
-export default graphql<I<%= interfaceName %>Query, {}, IWith<%= interfaceName %>WrappedProps>(<%= queryName %>, {
+export default graphql<I<%= interfaceName %>Query, {}, IWith<%= interfaceName %>WrappedProps>(<%= definitionName %>, {
   options: () => ({
     notifyOnNetworkStatusChange: true,
   }),
   props: (props) => ({
     ...props,
-    <%= queryName %>: getEntitiesFromEdgesSafely(['viewer', '<%= queryName %>', 'edges'], props.data),
+    <%= definitionName %>: getEntitiesFromEdgesSafely(['viewer', '<%= definitionName %>', 'edges'], props.data),
   }),
 })

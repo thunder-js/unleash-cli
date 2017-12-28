@@ -8,3 +8,20 @@ export const FolderNames = {
   mutations: 'mutations',
   logic: 'logic',
 }
+export const Templates = {
+  listItem: {
+    component: 'component-list-item',
+    story: 'story-list-item',
+  },
+  list: {
+    component: 'component-list',
+    story: 'story-list',
+    hoc: 'hoc',
+    container: 'container-list',
+  },
+}
+
+export const FileNames = {
+  component: 'index.tsx',
+  story: 'stories.tsx'
+}

@@ -12,11 +12,6 @@ export interface IDispatcher {
 
 }
 
-export interface IDispatchableFile {
-  module: string;
-  path: string;
-}
-
 export interface IFolderDispatcher extends IDispatcher {
   dispatch: (dir: IDispatchableFolder | IDispatchableFolder[]) => Promise<IDispatchableFolder>
 }

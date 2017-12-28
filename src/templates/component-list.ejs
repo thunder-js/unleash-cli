@@ -5,7 +5,7 @@ import <%= componentName %>Item from '../<%= componentName %>Item'
 
 export interface I<%= entityName %> {
   <%_ for (var i = 0; i < props.length; i++) { -%>
-  <%_ var prop = props[i], key = prop.type.key, value = prop.type.value -%>
+  <%_ var prop = props[i], key = prop.typescript.key, value = prop.typescript.value -%>
   <%= key %>: <%= value -%>;
   <%_} -%>
 }

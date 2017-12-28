@@ -18,11 +18,12 @@
     "sourceMap": true,
     "noImplicitReturns": true,
     "noUnusedParameters": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
   },
   "filesGlob": [
     "typings/index.d.ts",
     "src/**/*.ts",
+    "src/**/*.ejs",
   ],
   "types": [
     "jest"
