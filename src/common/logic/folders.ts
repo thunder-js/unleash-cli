@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as pkgDir from 'pkg-dir'
-import { FolderNames } from '../constants';
+import { FolderNames, FileNames } from '../constants'
 
 export const getProjectRoot = async (cwd: string): Promise<string> => pkgDir(cwd)
 export const getModulesFolder = async (cwd: string): Promise<string> => path.join(await getProjectRoot(cwd), FolderNames.src, FolderNames.modules);
@@ -12,4 +12,9 @@ export const getModuleNameByAbsolutePath = (absolutePath: string): string | null
     return matches[1]
   }
   return null
+}
+
+export const getStoriesFilePath = async (cwd) => {
+  const projectRootFolder = await getProjectRoot(cwd)
+  return projectRootFolder ? path.join(projectRootFolder, FolderNames.src, FileNames.stories) : null
 }

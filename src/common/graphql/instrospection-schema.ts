@@ -1,30 +1,4 @@
 import { IntrospectionSchema, IntrospectionType, IntrospectionTypeRef } from 'graphql'
-const ROOT_TYPE = 'Query'
-const OBJECT_TYPE = 'OBJECT'
-
-// export const getTypeByPath = (searchPath: string[], types: any, currentType: any = null): any => {
-
-
-//   if (!currentType) {
-//     const queryType = types.find((type) => type.name === ROOT_TYPE)
-//     return getTypeByPath(searchPath, types, queryType)
-//   }
-
-//   const nextSearch = searchPath[0]
-//   const field = currentType.fields.find((type) => type.name === nextSearch)
-//   if (!field) {
-//     throw new Error('incorrect searchPath')
-//   }
-
-//   const nextSearchType = field.type.ofType
-//   if (nextSearchType.kind !== OBJECT_TYPE) {
-//     throw new Error('field in searchPath is not an object')
-//   }
-
-//   const newCurrentType = types.find((type) => type.name === nextSearchType.name)
-//   return getTypeByPath(searchPath.slice(1), types, newCurrentType)
-// }
-
 
 const getNamedType = (instrospectionType: IntrospectionTypeRef): string => {
   if (instrospectionType.kind === 'LIST' || instrospectionType.kind === 'NON_NULL') {

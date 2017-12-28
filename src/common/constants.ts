@@ -23,5 +23,6 @@ export const Templates = {
 
 export const FileNames = {
   component: 'index.tsx',
-  story: 'stories.tsx'
+  story: 'stories.tsx',
+  stories: 'stories.js',
 }

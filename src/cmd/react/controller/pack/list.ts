@@ -8,7 +8,7 @@ import { requestGraphQL } from '../../../../services/graphql-endpoint/query'
 import { assembleModel, IModel } from '../../../../common/graphql/model'
 import { getSelectionsOfDefinitionByDefinitionName, getSelectionsByPath } from '../../../../common/graphql/document'
 import { getTypeByPath } from '../../../../common/graphql/instrospection-schema'
-import { getModuleNameByAbsolutePath, getModuleFolder } from '../../../../common/logic/folders'
+import { getModuleNameByAbsolutePath, getModuleFolder, getStoriesFilePath } from '../../../../common/logic/folders'
 import * as R from 'ramda'
 import {
   getListComponentFile,
@@ -17,6 +17,10 @@ import {
   getListHocFile,
   getListItemComponentFile,
   getListItemStoryFile,
+  getAppendedStoryFile,
+  getListItemComponentFileName,
+  getListComponentName,
+  getStoriesToAppend,
 } from './logic'
 import UI from '../../../../services/ui/ui';
 
@@ -93,6 +97,14 @@ export default async (options: IOptions, { ui, fileDispatcher, cwd }: IContext) 
   const entityArrayData = R.pathOr([], pathToArray, fetchedData).map((edge: {node: any}) => edge.node)
 
   /**
+   * Stories
+   */
+  const storiesFilePath = await getStoriesFilePath(process.cwd())
+  const storiesFileContent = await safelyRead(storiesFilePath)
+  const listItemComponentFileName = getListItemComponentFileName(definitionName)
+  const listComponentFileName = getListComponentName(definitionName)
+  const storiesToAppend = getStoriesToAppend(moduleName, [listItemComponentFileName, listComponentFileName], storiesFileContent)
+  /**
    * Render files
    */
   const listComponentFile = await getListComponentFile(moduleFolder, definitionName, model)
@@ -101,6 +113,7 @@ export default async (options: IOptions, { ui, fileDispatcher, cwd }: IContext) 
   const listHocFile = await getListHocFile(moduleFolder, graphQLFileName, definitionName, model)
   const listItemComponentFile = await getListItemComponentFile(moduleFolder, definitionName, model)
   const listItemStoryFile = await getListItemStoryFile(moduleFolder, definitionName, entityArrayData[0])
+  const appendedStoryFile = await getAppendedStoryFile(storiesFilePath, storiesFileContent, storiesToAppend)
 
   /**
    * Dispatch files
@@ -127,5 +140,9 @@ export default async (options: IOptions, { ui, fileDispatcher, cwd }: IContext) 
 
   ui.spinner.start('[ List-Pack ] Creating List Item Story ...')
   await fileDispatcher.dispatch(listItemStoryFile)
+  ui.spinner.succeed()
+
+  ui.spinner.start('[ List-Pack ] Appending Stories ...')
+  await fileDispatcher.dispatch(appendedStoryFile)
   ui.spinner.succeed()
 }
