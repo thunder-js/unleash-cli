@@ -25,13 +25,13 @@ const getAndroidBundleName = (name: string): string => getBundleName(name)
 const getNodePackageName = (name: string): string => R.pipe(removeDiacritics, spaceToHyphen, toLowerCase)(name)
 
 export const getReactNativeSeedContent = (name: string): {[key: string]: any} => ({
-  name,
+  name : name ? name : '',
   node: {
-    packageName: getNodePackageName(name),
+    packageName: name ? getNodePackageName(name) : '',
   },
   facebook: {
     appId: '',
-    appDisplayName: getFacebookAppDisplayName(name),
+    appDisplayName: name ? getFacebookAppDisplayName(name) : '',
   },
   googleMaps: {
     apiKey: '',
@@ -41,9 +41,9 @@ export const getReactNativeSeedContent = (name: string): {[key: string]: any} =>
     splash: '',
   },
   ios: {
-    displayName: getIosDisplayName(name),
-    projectName: getIosProjectName(name),
-    bundleName: getIosBundleName(name),
+    displayName: name ? getIosDisplayName(name) : '',
+    projectName: name ? getIosProjectName(name) : '',
+    bundleName: name ? getIosBundleName(name) : '',
     fastlane: {
       itcTeamId: '',
       teamId: '',
@@ -53,12 +53,12 @@ export const getReactNativeSeedContent = (name: string): {[key: string]: any} =>
     },
   },
   android: {
-    displayName: getAndroidDisplayName(name),
-    bundleName: getAndroidBundleName(name),
+    displayName: name ? getAndroidDisplayName(name) : '',
+    bundleName: name ? getAndroidBundleName(name) : '',
   },
 })
 
-export const getSeedContent = (type: SEED_TYPE, name: string): {[key: string]: any} => {
+export const getSeedContent = (type: SEED_TYPE, name?: string): {[key: string]: any} => {
   switch (type) {
     case SEED_TYPE.REACT_NATIVE:
       return getReactNativeSeedContent(name)
@@ -68,7 +68,7 @@ export const getSeedContent = (type: SEED_TYPE, name: string): {[key: string]: a
   }
 }
 
-export const getSeedFile = (projectRoot: string, type: SEED_TYPE, name: string): IDispatchableFile => {
+export const getSeedFile = (projectRoot: string, type: SEED_TYPE, name?: string): IDispatchableFile => {
   return {
     path: path.join(projectRoot, FileNames.seed),
     content: JSON.stringify(getSeedContent(type, name), null, 2),

@@ -8,7 +8,12 @@ const catchErrors = getErrorHandler(context)
 
 export default (yargs: Argv) => yargs
   .command('seed <type>', 'Unleash seed', (argv: Argv) => {
-    return argv.positional('type', {
+    return argv.options('name', {
+      alias: 'n',
+      type: 'string',
+      describe: 'Project name',
+    })
+    .positional('type', {
       type: 'string',
       describe: 'react-native | react-web |',
       coerce: (d) => externalTypeToInternal(d),
@@ -16,4 +21,5 @@ export default (yargs: Argv) => yargs
   },
   catchErrors((argv) => createSeed({
     type: argv.type,
+    name: argv.name,
   }, context)))

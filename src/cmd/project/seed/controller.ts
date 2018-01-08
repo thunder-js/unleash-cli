@@ -7,7 +7,7 @@ export interface ICreateSeed {
 }
 export const createSeed = async ({ type, name }: ICreateSeed, ctx: IContext) => {
   ctx.ui.spinner.start('Creating seed file...')
-  const seedFile = getSeedFile(ctx.cwd, type)
+  const seedFile = getSeedFile(ctx.cwd, type, name)
   ctx.fileDispatcher.dispatch(seedFile)
 
   ctx.ui.spinner.succeed()

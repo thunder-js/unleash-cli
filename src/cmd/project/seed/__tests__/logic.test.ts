@@ -2,6 +2,43 @@ import * as path from 'path';
 import { getSeedContent, SEED_TYPE } from '../logic'
 
 describe('#getSeedContent', () => {
+  it('return contents empty json for null name', () => {
+    expect(getSeedContent(SEED_TYPE.REACT_NATIVE))
+    .toEqual({
+      name: '',
+      node: {
+        packageName: '',
+      },
+      facebook: {
+        appId: '',
+        appDisplayName: '',
+      },
+      googleMaps: {
+        apiKey: '',
+      },
+      assets: {
+        icon: '',
+        splash: '',
+      },
+      ios: {
+        displayName: '',
+        projectName: '',
+        bundleName: '',
+        fastlane: {
+          itcTeamId: '',
+          teamId: '',
+          appleId: '',
+          certificatesRepoUrl: '',
+          slackUrl: '',
+        },
+      },
+      android: {
+        displayName: '',
+        bundleName: '',
+      },
+    });
+  });
+
   it('return contents correctly for name with Capitalized letters and Spaces', () => {
     expect(getSeedContent(SEED_TYPE.REACT_NATIVE, 'Bro Challenge'))
     .toEqual({
