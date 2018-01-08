@@ -32,4 +32,5 @@ export const FileNames = {
   component: 'index.tsx',
   story: 'stories.tsx',
   stories: 'stories.js',
+  seed: 'seed.json',
 }

@@ -57,6 +57,7 @@
     "@types/node": "^8.5.2",
     "ascii-art": "^1.4.2",
     "chalk": "^2.3.0",
+    "diacritics": "^1.3.0",
     "ejs": "^2.5.7",
     "fs-extra": "^5.0.0",
     "graphql": "^0.12.3",
