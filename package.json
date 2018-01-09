@@ -17,6 +17,7 @@
     "@types/babel-types": "^7.0.0",
     "@types/chalk": "^2.2.0",
     "@types/ejs": "^2.5.0",
+    "@types/find": "^0.2.0",
     "@types/fs-extra": "^5.0.0",
     "@types/graphql": "^0.11.7",
     "@types/jest": "^21.1.9",
@@ -57,8 +58,10 @@
     "@types/node": "^8.5.2",
     "ascii-art": "^1.4.2",
     "chalk": "^2.3.0",
+    "child-process-promise": "^2.2.1",
     "diacritics": "^1.3.0",
     "ejs": "^2.5.7",
+    "find": "^0.2.8",
     "fs-extra": "^5.0.0",
     "graphql": "^0.12.3",
     "graphql-request": "^1.4.1",
@@ -68,6 +71,8 @@
     "ora": "^1.3.0",
     "pkg-dir": "^2.0.0",
     "ramda": "^0.25.0",
+    "replace": "^0.3.0",
+    "replace-in-file": "^3.1.0",
     "typescript": "^2.6.2",
     "yargs": "^10.0.3"
   }

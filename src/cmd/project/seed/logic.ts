@@ -12,6 +12,10 @@ export enum SEED_TYPE {
   SERVICE = 'SERVICE',
 }
 
+const TEMPLATE_URL = {
+  reactNative: 'git@github.com:thunder-js/react-native-ts-lab.git',
+}
+
 const spaceToHyphen = (text: string): string => text.replace(new RegExp(' ', 'g'), '-')
 
 const getBundleName = (name: string): string => `com.thunderjs.${R.pipe(removeDiacritics, spaceToHyphen, toLowerCase)(name)}`
@@ -25,6 +29,8 @@ const getAndroidBundleName = (name: string): string => getBundleName(name)
 const getNodePackageName = (name: string): string => R.pipe(removeDiacritics, spaceToHyphen, toLowerCase)(name)
 
 export const getReactNativeSeedContent = (name: string): {[key: string]: any} => ({
+  type: SEED_TYPE.REACT_NATIVE,
+  template: TEMPLATE_URL.reactNative,
   name : name ? name : '',
   node: {
     packageName: name ? getNodePackageName(name) : '',
