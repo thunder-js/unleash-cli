@@ -11,6 +11,7 @@ yargs
   .fail((_, err: DetailedError) => {
     console.log(chalk.red(err.message))
     console.log(chalk.grey(err.details))
+    process.exit(1)
   })
   .help()
   .parse()
