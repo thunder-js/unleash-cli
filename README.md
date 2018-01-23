@@ -1,8 +1,11 @@
 # UnleasH
 
+🚧 WORK IN PROGRESS 🚧
+
 ![UnleasH](https://raw.githubusercontent.com/rafaelcorreiapoli/unleash-cli/master/resources/demon.jpg)
 
 *" Everything you need to make money! "*
+
 
 
 ## Installation
