@@ -16,6 +16,52 @@ const TEMPLATE_URL = {
   reactNative: 'git@github.com:thunder-js/react-native-ts-lab.git',
 }
 
+export interface IReactNativeSeed {
+  type: string,
+  template: string,
+  name: string,
+  node: {
+    packageName: string,
+  },
+  facebook: {
+    appId: string,
+    appDisplayName: string,
+  },
+  googleMaps: {
+    apiKey: string,
+  },
+  assets: {
+    icon: string,
+    splash: string,
+  },
+  ios: {
+    displayName: string,
+    projectName: string,
+    bundleIdentifier: string,
+    fastlane: {
+      itcTeamId: string,
+      itcTeamName: string,
+      teamName: string,
+      teamId: string,
+      appleId: string,
+      certificatesRepoUrl: string,
+      slackUrl: string,
+    },
+    codePush: {
+      staging: string,
+      production: string,
+    },
+  },
+  android: {
+    displayName: string,
+    bundleIdentifier: string,
+    codePush: {
+      staging: string,
+      production: string,
+    },
+  },
+}
+
 const spaceToHyphen = (text: string): string => text.replace(new RegExp(' ', 'g'), '-')
 
 const getBundleName = (name: string): string => `com.thunderjs.${R.pipe(removeDiacritics, spaceToHyphen, toLowerCase)(name)}`
@@ -28,7 +74,7 @@ const getAndroidDisplayName = (name: string): string => name
 const getAndroidBundleName = (name: string): string => getBundleName(name)
 const getNodePackageName = (name: string): string => R.pipe(removeDiacritics, spaceToHyphen, toLowerCase)(name)
 
-export const getReactNativeSeedContent = (name: string): {[key: string]: any} => ({
+export const getReactNativeSeedContent = (name: string): IReactNativeSeed => ({
   type: SEED_TYPE.REACT_NATIVE,
   template: TEMPLATE_URL.reactNative,
   name : name ? name : '',
@@ -49,18 +95,28 @@ export const getReactNativeSeedContent = (name: string): {[key: string]: any} =>
   ios: {
     displayName: name ? getIosDisplayName(name) : '',
     projectName: name ? getIosProjectName(name) : '',
-    bundleName: name ? getIosBundleName(name) : '',
+    bundleIdentifier: name ? getIosBundleName(name) : '',
     fastlane: {
+      itcTeamName: '',
       itcTeamId: '',
+      teamName: '',
       teamId: '',
       appleId: '',
       certificatesRepoUrl: '',
       slackUrl: '',
     },
+    codePush: {
+      staging: '',
+      production: '',
+    },
   },
   android: {
     displayName: name ? getAndroidDisplayName(name) : '',
-    bundleName: name ? getAndroidBundleName(name) : '',
+    bundleIdentifier: name ? getAndroidBundleName(name) : '',
+    codePush: {
+      staging: '',
+      production: '',
+    },
   },
 })
 
@@ -80,3 +136,15 @@ export const getSeedFile = (projectRoot: string, type: SEED_TYPE, name?: string)
     content: JSON.stringify(getSeedContent(type, name), null, 2),
   }
 }
+
+export const assocCodePushKeys = (seed, iosCodePushKeys, androidCodePushKeys) => ({
+  ...seed,
+  ios: {
+    ...seed.ios,
+    codePush: iosCodePushKeys,
+  },
+  android: {
+    ...seed.android,
+    codePush: androidCodePushKeys,
+  },
+})

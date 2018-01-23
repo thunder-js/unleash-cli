@@ -1,48 +1,47 @@
 import { exec } from 'child-process-promise'
 import chalk from 'chalk'
-import { spawn } from 'child_process';
 import * as find from 'find'
 import * as path from 'path'
 import { render } from 'ejs'
 import { safelyRead } from '../../../services/fs/io'
+import { spawnWithLog } from '../../../common/spawn'
+import { IReactNativeSeed } from '../seed/logic'
 
-const spawnWithLog = (cmd: string, printStdout = true, printStderr = true): Promise<string> => new Promise((resolve, reject) => {
-  console.log(chalk.yellow(cmd))
-  const [program, ...a] = cmd.split(' ')
-  const childProcess = spawn(program, a)
-  let stdoutData = ''
-  let stderrData = ''
-
-  childProcess.stdout.on('data', (data) => {
-    stdoutData = stdoutData + data.toString()
-    if (printStdout) {
-      console.log(chalk.grey(data.toString()))
-    }
-  })
-  childProcess.stderr.on('data', (data) => {
-    stderrData = stderrData + data.toString()
-    if (printStderr) {
-      console.log(chalk.grey(data.toString()))
-    }
-  })
-
-  childProcess.on('close', (code) => {
-    if (code === 0) {
-      return resolve(stdoutData)
-    }
-    reject(stderrData)
-  })
-})
-
-export const cleanDirectory = async () => {
-  await spawnWithLog('rm -rf .git')
-  await spawnWithLog ('find . ! -name seed.json -delete')
+export enum Platform {
+  iOS = 'iOS',
+  Android = 'Android',
 }
 
-export const cloneTemplate = async (templateUrl: string) => {
-  await spawnWithLog('git init .')
-  await spawnWithLog(`git remote add template ${templateUrl}`)
-  await spawnWithLog('git pull template new-app')
+export interface ICodePushKeys {
+  production: string;
+  staging: string;
+}
+
+export interface IErrorDetail {
+  message: string;
+  path: string[];
+  type: string;
+}
+
+export const formatErrorDetails = (details: IErrorDetail[]) => {
+  return details.map((detail) => {
+    return chalk.grey(`* ${detail.path.join('.')}: ${detail.message}`)
+  }).join('\n')
+}
+
+export const validateSeed = (seed: IReactNativeSeed, schema): null | IErrorDetail[]  => {
+  const result = schema.validate(seed, {
+    abortEarly: false,
+  })
+  if (result.error) {
+    return result.error.details
+  }
+  return null
+
+}
+export const getRemoteNameForUrl = (remotes, remoteUrl) => {
+  const existingRemote = remotes.find((remote) => remote.refs.fetch === remoteUrl)
+  return existingRemote && existingRemote.name
 }
 
 export const changeReactNativeProjectName = async (projectName: string, bundleIdentifier: string) => {
@@ -53,10 +52,6 @@ export const installJsDependencies = async () => {
   return spawnWithLog('yarn install')
 }
 
-export enum Platform {
-  iOS = 'iOS',
-  Android = 'Android',
-}
 export const getCodePushAppName = (name: string, platform: Platform) => {
   return `${name}-${platform}`
 }
@@ -65,12 +60,8 @@ export const createCodePushApp = async (appName: string) => {
   return spawnWithLog(`code-push app add ${appName} ios react-native`)
 }
 
-export interface ICodePushKeys {
-  production: string;
-  staging: string;
-}
-export const obtainCodePushKeys = async (appName: string): Promise<ICodePushKeys> => {
-  const result = JSON.parse(await spawnWithLog(`code-push deployment ls ${appName} -k --format json`, false))
+export const fetchCodePushKeys = async (appName: string): Promise<ICodePushKeys> => {
+  const result = JSON.parse(await spawnWithLog(`code-push deployment ls ${appName} -k --format json`, undefined, null, false))
 
   const productionConfig = result.find((key) => key.name === 'Production')
   const stagingConfig = result.find((key) => key.name === 'Staging')
@@ -101,7 +92,29 @@ export const getDispatchableTemplateFiles = (files: string[], data: {[key: strin
   }))
 }
 
-export const checkIfCodePushAppExists = async (codePushAppName: string): boolean => {
-  const apps = JSON.parse(await spawnWithLog(`code-push app ls --format json`, false))
-  return !! apps.find((app) => app.name === codePushAppName)
+export const checkIfCodePushAppExists = async (codePushAppName: string): Promise<boolean> => {
+  const apps = JSON.parse(await spawnWithLog(`code-push app ls --format json`, undefined, null, false))
+  return !!apps.find((app) => app.name === codePushAppName)
+}
+
+export const changeIcon = async (iconPath: string) => {
+  await spawnWithLog(`rntb icon ${iconPath}`)
+}
+
+export const createAppOnAppleStore = async () => {
+  await spawnWithLog('bundle exec fastlane publishStore', {
+    cwd: 'ios',
+  })
+}
+
+export const createAppleCertificates = async () => {
+  await spawnWithLog('bundle exec fastlane createCertificates', {
+    cwd: 'ios',
+  })
+}
+
+export const uploadToTestFlight = async () => {
+  await spawnWithLog('bundle exec fastlane beta', {
+    cwd: 'ios',
+  })
 }
