@@ -1,12 +1,12 @@
 {
   "name": "unleash-cli",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "main": "lib/cli.js",
   "bin": {
     "unleash": "lib/cli.js"
   },
   "engines": {
-    "node" : "8.9.4"
+    "node": "8.9.4"
   },
   "license": "MIT",
   "scripts": {
@@ -81,6 +81,6 @@
     "replace-in-file": "^3.1.0",
     "simple-git": "^1.89.0",
     "typescript": "^2.6.2",
-    "yargs": "^10.0.3"
+    "yargs": "^11.0.0"
   }
 }
