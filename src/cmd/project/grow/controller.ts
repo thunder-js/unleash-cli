@@ -6,7 +6,6 @@ import * as path from 'path'
 import { IReactNativeSeed, assocCodePushKeys } from '../seed/logic'
 import { DetailedError } from '../../../common/error'
 import { schema } from './model'
-import { spawnWithLog } from '../../../common/spawn'
 import * as isUrl from 'is-url'
 import * as downloadFile from 'download-file'
 import { promisify } from 'util';
@@ -106,8 +105,6 @@ export const growSeed = async ({ seedPath }: IGrowSeed, ctx: IContext) => {
   } else {
     ctx.ui.log(chalk.yellow('Skipping icon change'))
   }
-
-  return
 
   //  Create app on apple store
   ctx.ui.log(chalk.green('Creating app on Apple Store'))

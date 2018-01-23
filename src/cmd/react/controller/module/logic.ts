@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { FolderNames } from '../../../../common/constants';
-import { IDispatchableFolder } from './module';
+import { IDispatchableFolder } from '../../model/dispatchable-file'
 
 export const getNewModuleFolders = (moduleDir: string): IDispatchableFolder[] => {
   return [{

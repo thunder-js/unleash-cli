@@ -1,4 +1,3 @@
-import { exec } from 'child-process-promise'
 import chalk from 'chalk'
 import * as find from 'find'
 import * as path from 'path'

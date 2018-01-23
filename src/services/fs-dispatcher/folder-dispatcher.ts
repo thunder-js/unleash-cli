@@ -1,5 +1,4 @@
 import * as fs from 'fs-extra';
-import * as path from 'path';
 import { isArray } from 'util';
 import { IDispatchableFolder } from './types'
 

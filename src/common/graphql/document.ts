@@ -1,4 +1,4 @@
-import { DefinitionNode, SelectionNode, DocumentNode } from 'graphql'
+import { DefinitionNode, SelectionNode } from 'graphql'
 
 export const getSelectionsOfDefinitionByDefinitionName = (definitionName: string, definitionNodes: DefinitionNode[]): SelectionNode[] | null => {
   const definitionNode =  definitionNodes.find((node: DefinitionNode) => {

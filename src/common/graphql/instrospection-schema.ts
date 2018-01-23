@@ -1,11 +1,13 @@
 import { IntrospectionSchema, IntrospectionType, IntrospectionTypeRef } from 'graphql'
 
 const getNamedType = (instrospectionType: IntrospectionTypeRef): string => {
-  if (instrospectionType.kind === 'LIST' || instrospectionType.kind === 'NON_NULL') {
-    return getNamedType(instrospectionType.ofType)
-  } else {
-    return instrospectionType.name
-  }
+  console.log(instrospectionType)
+  return 'FIXME'
+  // if (instrospectionType.kind === 'LIST' || instrospectionType.kind === 'NON_NULL') {
+  //   return getNamedType(instrospectionType.ofType)
+  // } else {
+  //   return instrospectionType.name
+  // }
 }
 
 export const getTypeByPath = (searchPath: string[], instrospectionSchema: IntrospectionSchema, currentType: IntrospectionType | undefined | null = null): IntrospectionType | undefined | null => {

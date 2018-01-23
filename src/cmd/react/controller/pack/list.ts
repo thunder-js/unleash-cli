@@ -5,7 +5,7 @@ import { safelyRead } from '../../../../services/fs/io'
 import { getDocumentNode, extractSDL } from '../../../../common/graphql/info'
 import { fetchInstrospectionSchema } from '../../../../services/graphql-endpoint/instrospection'
 import { requestGraphQL } from '../../../../services/graphql-endpoint/query'
-import { assembleModel, IModel } from '../../../../common/graphql/model'
+import { assembleModel } from '../../../../common/graphql/model'
 import { getSelectionsOfDefinitionByDefinitionName, getSelectionsByPath } from '../../../../common/graphql/document'
 import { getTypeByPath } from '../../../../common/graphql/instrospection-schema'
 import { getModuleNameByAbsolutePath, getModuleFolder, getStoriesFilePath } from '../../../../common/logic/folders'
@@ -40,7 +40,7 @@ const displayInfo = (options: IOptions, ui: UI) => {
 }
 
 export default async (options: IOptions, { ui, fileDispatcher, cwd }: IContext) => {
-  const { graphQLFilePath, force, graphQLUrl, pathToEntity} = options
+  const { graphQLFilePath, graphQLUrl, pathToEntity} = options
   displayInfo(options, ui)
   /**
    * Basic info

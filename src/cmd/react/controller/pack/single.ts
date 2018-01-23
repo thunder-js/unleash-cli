@@ -1,17 +1,17 @@
 import { IContext } from '../../../../common/context'
 import chalk from 'chalk'
-import { getModuleNameByAbsolutePath, getModuleFolder, getStoriesFilePath } from '../../../../common/logic/folders'
+import { getModuleNameByAbsolutePath, getModuleFolder } from '../../../../common/logic/folders'
 import { safelyRead } from '../../../../services/fs/io'
 import { extractSDL, getDocumentNode } from '../../../../common/graphql/info'
 import { getSelectionsOfDefinitionByDefinitionName, getSelectionsByPath } from '../../../../common/graphql/document'
 import { fetchInstrospectionSchema } from '../../../../services/graphql-endpoint/instrospection'
 import { getTypeByPath } from '../../../../common/graphql/instrospection-schema'
-import * as path from 'path'
 import { assembleModel } from '../../../../common/graphql/model'
 import { requestGraphQL } from '../../../../services/graphql-endpoint/query';
 import * as R from 'ramda';
-import { getSingleComponentFileName, getStoriesToAppend, isStoryAlreadyRegistered } from './logic'
+// import { getSingleComponentFileName, getStoriesToAppend, isStoryAlreadyRegistered } from './logic'
 import { getSingleComponentFile, getSingleStoryFile, getSingleHocFile, getSingleContainerFile } from './logic-single';
+import UI from '../../../../services/ui/ui'
 
 export interface IOptions {
   graphQLFilePath: string,
@@ -29,7 +29,7 @@ const displayInfo = (options: IOptions, ui: UI) => {
 }
 
 export default async (options: IOptions, { ui, fileDispatcher, cwd }: IContext) => {
-  const { graphQLFilePath, force, graphQLUrl, pathToEntity} = options
+  const { graphQLFilePath, graphQLUrl, pathToEntity} = options
   displayInfo(options, ui)
 
   /**
@@ -45,7 +45,6 @@ export default async (options: IOptions, { ui, fileDispatcher, cwd }: IContext) 
   /**
    * Document
    */
-  const graphQLFileName = path.basename(graphQLFilePath, '.ts')
   const graphQLFileData = await safelyRead(graphQLFilePath)
   const query = await extractSDL(graphQLFileData)
   if (!query) {
@@ -94,11 +93,11 @@ export default async (options: IOptions, { ui, fileDispatcher, cwd }: IContext) 
   /**
    * Stories
    */
-  const storiesFilePath = await getStoriesFilePath(process.cwd())
-  const storiesFileContent = await safelyRead(storiesFilePath)
-  const singleComponentFileName = getSingleComponentFileName(definitionName)
-  const storiesToAppend = getStoriesToAppend(moduleName, [singleComponentFileName], storiesFileContent)
-  const storyAlreadyAppended = isStoryAlreadyRegistered(moduleName, singleComponentFileName, storiesFileContent)
+  // const storiesFilePath = await getStoriesFilePath(process.cwd())
+  // const storiesFileContent = await safelyRead(storiesFilePath)
+  // const singleComponentFileName = getSingleComponentFileName(definitionName)
+  // const storiesToAppend = getStoriesToAppend(moduleName, [singleComponentFileName], storiesFileContent)
+  // const storyAlreadyAppended = isStoryAlreadyRegistered(moduleName, singleComponentFileName, storiesFileContent)
 
   /**
    * Render files

@@ -1,4 +1,3 @@
-import * as path from 'path';
 import { getNewModuleFolders } from '../logic';
 
 describe('#getNewModuleFolders', () => {

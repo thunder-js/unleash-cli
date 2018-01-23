@@ -10,7 +10,7 @@
     "clean": "rimraf lib",
     "prebuild": "npm run clean",
     "test": "jest --watch",
-    "build": "tsc",
+    "build": "tsc --skipLibCheck",
     "watch": "tsc -w"
   },
   "devDependencies": {

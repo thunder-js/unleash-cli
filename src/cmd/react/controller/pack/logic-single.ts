@@ -5,10 +5,9 @@ import { getHocFileName, getSingleComponentFileName, getInterfaceName, getHocNam
 import { uncapitalizeFirst, camelToKebab } from '../../../../common/string'
 import { IModel } from '../../../../common/graphql/model'
 import * as path from 'path'
-import { capitalizeFirst } from '../../../../modules/common/string';
 
 const getDataNamespace = (definitionName: string): string => uncapitalizeFirst(definitionName)
-const getSingleContainerFileName = (definitionName: string): string => capitalizeFirst(definitionName)
+// const getSingleContainerFileName = (definitionName: string): string => capitalizeFirst(definitionName)
 
 export async function getSingleComponentFile(
   moduleFolder: string,

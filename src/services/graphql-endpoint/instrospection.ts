@@ -1,5 +1,4 @@
 import fetch from 'node-fetch';
-import * as https from 'https';
 import { introspectionQuery } from 'graphql/utilities';
 import { IntrospectionSchema } from 'graphql';
 

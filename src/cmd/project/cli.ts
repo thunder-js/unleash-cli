@@ -1,12 +1,12 @@
-import { Argv } from 'yargs';
+import { Argv, Arguments } from 'yargs'
 import { createSeed } from './seed/controller'
-import { getErrorHandler } from '../../common/handle-errors'
+// import { getErrorHandler } from '../../common/handle-errors'
 import context from '../../common/context'
 import { externalTypeToInternal } from './seed/adapter'
 import * as path from 'path'
 import { growSeed } from './grow/controller'
 
-const catchErrors = getErrorHandler(context)
+// const catchErrors = getErrorHandler(context)
 
 export default (yargs: Argv) => yargs
   .command('seed <type>', 'Unleash seed', (argv: Argv) => {
@@ -21,16 +21,20 @@ export default (yargs: Argv) => yargs
       coerce: (d) => externalTypeToInternal(d),
     })
   },
-  catchErrors((argv) => createSeed({
-    type: argv.type,
-    name: argv.name,
-  }, context)))
+  async (args: Arguments) => {
+    await createSeed({
+      type: args.type,
+      name: args.name,
+    }, context)
+  })
   .command('grow <seedPath>', 'Grow the seed', (argv: Argv) => {
     return argv.positional('seedPath', {
       type: 'string',
       coerce: (seedRelativePath) => path.resolve(process.cwd(), seedRelativePath),
     })
   },
-  catchErrors((argv) => growSeed({
-    seedPath: argv.seedPath,
-  }, context)))
+  async (args: Arguments) => {
+    await growSeed({
+      seedPath: args.seedPath,
+    }, context)
+  })

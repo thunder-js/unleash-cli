@@ -2,7 +2,7 @@ import { IDispatchableFile } from '../../react/model/dispatchable-file';
 import * as path from 'path'
 import { remove as removeDiacritics } from 'diacritics'
 import { FileNames } from '../../../common/constants';
-import { removeSpaces, toLowerCase, removeHyphen } from '../../../common/string'
+import { toLowerCase } from '../../../common/string'
 import * as R from 'ramda';
 
 export enum SEED_TYPE {

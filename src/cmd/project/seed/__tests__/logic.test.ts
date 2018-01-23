@@ -1,4 +1,3 @@
-import * as path from 'path';
 import { getSeedContent, SEED_TYPE } from '../logic'
 
 describe('#getSeedContent', () => {
