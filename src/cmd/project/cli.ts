@@ -5,7 +5,8 @@ import context from '../../common/context'
 import { externalTypeToInternal } from './seed/adapter'
 import * as path from 'path'
 import { growSeed } from './grow/controller'
-
+import chalk from 'chalk'
+import { DetailedError } from '../../common/error'
 // const catchErrors = getErrorHandler(context)
 
 export default (yargs: Argv) => yargs
@@ -22,7 +23,7 @@ export default (yargs: Argv) => yargs
     })
   },
   async (args: Arguments) => {
-    await createSeed({
+    return createSeed({
       type: args.type,
       name: args.name,
     }, context)
@@ -34,7 +35,12 @@ export default (yargs: Argv) => yargs
     })
   },
   async (args: Arguments) => {
-    await growSeed({
+    return growSeed({
       seedPath: args.seedPath,
     }, context)
+  })
+  .fail((_, err: DetailedError) => {
+    console.log(chalk.red(err.message))
+    console.log(chalk.grey(err.details))
+    process.exit(1)
   })
