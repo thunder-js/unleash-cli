@@ -45,7 +45,7 @@ unleash project seed react-native -n "Quack Pack"
     "displayName": "Quack Pack",
     "projectName": "QuackPack",
     "bundleIdentifier": "com.quack-pack.app",
-        "googleMaps": {
+    "googleMaps": {
       "apiKey": ""
     },
     "fastlane": {
@@ -90,7 +90,7 @@ unleash project grow ./seed.json
   - Crashlytics
   - Authentication with Facebook & E-mail (checkout https://github.com/thunder-js/storm-auth)
   - Apollo 2.0
-  - Forms `with react-final-form`
+  - Forms with `react-final-form`
   - Onboarding (checkout https://github.com/thunder-js/storm-onboarding)
   - Basic App flow (checkout https://github.com/thunder-js/storm-foundation)
 
@@ -115,5 +115,5 @@ yarn run beta-store:ios
 ```
 - To *manually* release a new version to AppStore, just run:
 ```
-release-store:ios
+yarn release-store:ios
 ```
