@@ -1,6 +1,6 @@
 # UnleasH
 
-🚧 WORK IN PROGRESS 🚧 (Specially in Android)
+🚧 WORK IN PROGRESS 🚧 (Specially for Android)
 
 ![UnleasH](https://raw.githubusercontent.com/rafaelcorreiapoli/unleash-cli/master/resources/demon.jpg)
 
@@ -93,7 +93,7 @@ unleash project grow ./seed.json
   - Forms `with react-final-form`
   - Onboarding (checkout https://github.com/thunder-js/storm-onboarding)
   - Basic App flow (checkout https://github.com/thunder-js/storm-foundation)
-  
+
 
 - A circleCI config will be generated for you, just go to circleCI (https://circleci.com/) and add your project
 The pipeline works as follows:
