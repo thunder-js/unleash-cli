@@ -84,14 +84,14 @@ describe('#getSeedContent', () => {
           slackUrl: '',
         },
         codePush: {
-          name: '',
+          name: 'BroChallenge-iOS',
         },
       },
       android: {
         displayName: 'Bro Challenge',
         bundleIdentifier: 'com.thunderjs.bro-challenge',
         codePush: {
-          name: '',
+          name: 'BroChallenge-Android',
         },
       },
     });
@@ -132,14 +132,14 @@ describe('#getSeedContent', () => {
           slackUrl: '',
         },
         codePush: {
-          name: '',
+          name: 'BROCHALLENGE-iOS',
         },
       },
       android: {
         displayName: 'BRO CHALLENGE',
         bundleIdentifier: 'com.thunderjs.bro-challenge',
         codePush: {
-          name: '',
+          name: 'BROCHALLENGE-Android',
         },
       },
     });
@@ -180,14 +180,14 @@ describe('#getSeedContent', () => {
           slackUrl: '',
         },
         codePush: {
-          name: '',
+          name: 'Facebook-iOS',
         },
       },
       android: {
         displayName: 'Facebook',
         bundleIdentifier: 'com.thunderjs.facebook',
         codePush: {
-          name: '',
+          name: 'Facebook-Android',
         },
       },
     });
@@ -228,14 +228,14 @@ describe('#getSeedContent', () => {
           slackUrl: '',
         },
         codePush: {
-          name: '',
+          name: 'WhatsApp-iOS',
         },
       },
       android: {
         displayName: 'WhatsApp',
         bundleIdentifier: 'com.thunderjs.whatsapp',
         codePush: {
-          name: '',
+          name: 'WhatsApp-Android',
         },
       },
     });
@@ -276,14 +276,14 @@ describe('#getSeedContent', () => {
           slackUrl: '',
         },
         codePush: {
-          name: '',
+          name: 'whatsApp-iOS',
         },
       },
       android: {
         displayName: 'whatsApp',
         bundleIdentifier: 'com.thunderjs.whatsapp',
         codePush: {
-          name: '',
+          name: 'whatsApp-Android',
         },
       },
     });
@@ -324,14 +324,14 @@ describe('#getSeedContent', () => {
           slackUrl: '',
         },
         codePush: {
-          name: '',
+          name: 'myname-iOS',
         },
       },
       android: {
         displayName: 'myname',
         bundleIdentifier: 'com.thunderjs.myname',
         codePush: {
-          name: '',
+          name: 'myname-Android',
         },
       },
     });
@@ -372,14 +372,14 @@ describe('#getSeedContent', () => {
           slackUrl: '',
         },
         codePush: {
-          name: '',
+          name: 'JoaoLoucoDasilva-iOS',
         },
       },
       android: {
         displayName: 'João-Louco Da sílva',
         bundleIdentifier: 'com.thunderjs.joao-louco-da-silva',
         codePush: {
-          name: '',
+          name: 'JoaoLoucoDasilva-Android',
         },
       },
     });

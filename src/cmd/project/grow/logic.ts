@@ -6,11 +6,6 @@ import { safelyRead } from '../../../services/fs/io'
 import { spawnWithLog } from '../../../common/spawn'
 import { IReactNativeSeed } from '../seed/logic'
 
-export enum Platform {
-  iOS = 'iOS',
-  Android = 'Android',
-}
-
 export interface ICodePushKeys {
   production: string;
   staging: string;
@@ -51,9 +46,7 @@ export const installJsDependencies = async () => {
   return spawnWithLog('yarn install')
 }
 
-export const getCodePushAppName = (name: string, platform: Platform) => {
-  return `${name}-${platform}`
-}
+
 
 export const createCodePushApp = async (appName: string) => {
   return spawnWithLog(`code-push app add ${appName} ios react-native`)

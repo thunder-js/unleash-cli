@@ -1,8 +1,9 @@
 import * as Joi from 'joi'
 export const schema = Joi.object().keys({
   type: Joi.string().required(),
-  template: Joi.string().required(),
   name: Joi.string().required(),
+  template: Joi.string().required(),
+  tag: Joi.string().required(),
   node: Joi.object().keys({
     packageName: Joi.string().required(),
   }).required(),
@@ -30,9 +31,15 @@ export const schema = Joi.object().keys({
       certificatesRepoUrl: Joi.string().required(),
       slackUrl: Joi.string().required(),
     }).required(),
+    codePush: Joi.object().keys({
+      name: Joi.string().required(),
+    }),
   }),
   android: Joi.object().keys({
     displayName: Joi.string().required(),
     bundleIdentifier: Joi.string().required(),
+    codePush: Joi.object().keys({
+      name: Joi.string().required(),
+    }),
   }).required(),
 })

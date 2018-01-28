@@ -4,6 +4,7 @@ import { remove as removeDiacritics } from 'diacritics'
 import { FileNames } from '../../../common/constants';
 import { toLowerCase } from '../../../common/string'
 import * as R from 'ramda';
+import { Platform } from '../../../common/model/platform'
 
 export enum SEED_TYPE {
   REACT_NATIVE = 'REACT_NATIVE',
@@ -67,6 +68,7 @@ const removeHyphen = (text: string): string => text.replace(new RegExp('-', 'g')
 
 const getBundleName = (name: string): string => `com.thunderjs.${R.pipe(removeDiacritics, spaceToHyphen, toLowerCase)(name)}`
 
+const noSpacesHyphensOrDiacriticts = (name: string) => R.pipe(removeDiacritics, removeSpaces, removeHyphen)(name)
 const getFacebookAppDisplayName = (name: string): string => name
 const getIosDisplayName = (name: string): string => name
 const getIosProjectName = (name: string): string => R.pipe(removeDiacritics, removeSpaces, removeHyphen)(name)
@@ -74,6 +76,10 @@ const getIosBundleName = (name: string): string => getBundleName(name)
 const getAndroidDisplayName = (name: string): string => name
 const getAndroidBundleName = (name: string): string => getBundleName(name)
 const getNodePackageName = (name: string): string => R.pipe(removeDiacritics, spaceToHyphen, toLowerCase)(name)
+
+export const getCodePushAppName = (name: string, platform: Platform) => {
+  return `${noSpacesHyphensOrDiacriticts(name)}-${platform}`
+}
 
 export const getReactNativeSeedContent = (name: string): IReactNativeSeed => ({
   type: SEED_TYPE.REACT_NATIVE,
@@ -108,14 +114,14 @@ export const getReactNativeSeedContent = (name: string): IReactNativeSeed => ({
       slackUrl: '',
     },
     codePush: {
-      name: '',
+      name: name ? getCodePushAppName(name, Platform.iOS) : '',
     },
   },
   android: {
     displayName: name ? getAndroidDisplayName(name) : '',
     bundleIdentifier: name ? getAndroidBundleName(name) : '',
     codePush: {
-      name: '',
+      name: name ? getCodePushAppName(name, Platform.Android) : '',
     },
   },
 })
@@ -141,10 +147,16 @@ export const assocCodePushKeys = (seed, iosCodePushKeys, androidCodePushKeys) =>
   ...seed,
   ios: {
     ...seed.ios,
-    codePush: iosCodePushKeys,
+    codePush: {
+      ...seed.ios.codePush,
+      iosCodePushKeys,
+    },
   },
   android: {
     ...seed.android,
-    codePush: androidCodePushKeys,
+    codePush: {
+      ...seed.android.codePush,
+      androidCodePushKeys,
+    },
   },
 })
