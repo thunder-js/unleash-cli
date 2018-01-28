@@ -4,6 +4,9 @@ describe('#getSeedContent', () => {
   it('return contents empty json for null name', () => {
     expect(getSeedContent(SEED_TYPE.REACT_NATIVE))
     .toEqual({
+      type: SEED_TYPE.REACT_NATIVE,
+      template: 'git@github.com:thunder-js/react-native-ts-lab.git',
+      tag: '1.0.0',
       name: '',
       node: {
         packageName: '',
@@ -22,18 +25,26 @@ describe('#getSeedContent', () => {
       ios: {
         displayName: '',
         projectName: '',
-        bundleName: '',
+        bundleIdentifier: '',
         fastlane: {
+          itcTeamName: '',
           itcTeamId: '',
+          teamName: '',
           teamId: '',
           appleId: '',
           certificatesRepoUrl: '',
           slackUrl: '',
         },
+        codePush: {
+          name: '',
+        },
       },
       android: {
         displayName: '',
-        bundleName: '',
+        bundleIdentifier: '',
+        codePush: {
+          name: '',
+        },
       },
     });
   });
@@ -41,6 +52,9 @@ describe('#getSeedContent', () => {
   it('return contents correctly for name with Capitalized letters and Spaces', () => {
     expect(getSeedContent(SEED_TYPE.REACT_NATIVE, 'Bro Challenge'))
     .toEqual({
+      type: SEED_TYPE.REACT_NATIVE,
+      template: 'git@github.com:thunder-js/react-native-ts-lab.git',
+      tag: '1.0.0',
       name: 'Bro Challenge',
       node: {
         packageName: 'bro-challenge',
@@ -58,19 +72,27 @@ describe('#getSeedContent', () => {
       },
       ios: {
         displayName: 'Bro Challenge',
-        projectName: 'Bro-Challenge',
-        bundleName: 'com.thunderjs.bro-challenge',
+        projectName: 'BroChallenge',
+        bundleIdentifier: 'com.thunderjs.bro-challenge',
         fastlane: {
+          itcTeamName: '',
           itcTeamId: '',
+          teamName: '',
           teamId: '',
           appleId: '',
           certificatesRepoUrl: '',
           slackUrl: '',
         },
+        codePush: {
+          name: '',
+        },
       },
       android: {
         displayName: 'Bro Challenge',
-        bundleName: 'com.thunderjs.bro-challenge',
+        bundleIdentifier: 'com.thunderjs.bro-challenge',
+        codePush: {
+          name: '',
+        },
       },
     });
   });
@@ -78,6 +100,9 @@ describe('#getSeedContent', () => {
   it('return contents correctly for name with all Capitalized letters and Spaces', () => {
     expect(getSeedContent(SEED_TYPE.REACT_NATIVE, 'BRO CHALLENGE'))
     .toEqual({
+      type: SEED_TYPE.REACT_NATIVE,
+      template: 'git@github.com:thunder-js/react-native-ts-lab.git',
+      tag: '1.0.0',
       name: 'BRO CHALLENGE',
       node: {
         packageName: 'bro-challenge',
@@ -95,19 +120,27 @@ describe('#getSeedContent', () => {
       },
       ios: {
         displayName: 'BRO CHALLENGE',
-        projectName: 'BRO-CHALLENGE',
-        bundleName: 'com.thunderjs.bro-challenge',
+        projectName: 'BROCHALLENGE',
+        bundleIdentifier: 'com.thunderjs.bro-challenge',
         fastlane: {
+          itcTeamName: '',
           itcTeamId: '',
+          teamName: '',
           teamId: '',
           appleId: '',
           certificatesRepoUrl: '',
           slackUrl: '',
         },
+        codePush: {
+          name: '',
+        },
       },
       android: {
         displayName: 'BRO CHALLENGE',
-        bundleName: 'com.thunderjs.bro-challenge',
+        bundleIdentifier: 'com.thunderjs.bro-challenge',
+        codePush: {
+          name: '',
+        },
       },
     });
   });
@@ -115,6 +148,9 @@ describe('#getSeedContent', () => {
   it('return contents correctly for simple name', () => {
     expect(getSeedContent(SEED_TYPE.REACT_NATIVE, 'Facebook'))
     .toEqual({
+      type: SEED_TYPE.REACT_NATIVE,
+      template: 'git@github.com:thunder-js/react-native-ts-lab.git',
+      tag: '1.0.0',
       name: 'Facebook',
       node: {
         packageName: 'facebook',
@@ -133,18 +169,26 @@ describe('#getSeedContent', () => {
       ios: {
         displayName: 'Facebook',
         projectName: 'Facebook',
-        bundleName: 'com.thunderjs.facebook',
+        bundleIdentifier: 'com.thunderjs.facebook',
         fastlane: {
+          itcTeamName: '',
           itcTeamId: '',
+          teamName: '',
           teamId: '',
           appleId: '',
           certificatesRepoUrl: '',
           slackUrl: '',
         },
+        codePush: {
+          name: '',
+        },
       },
       android: {
         displayName: 'Facebook',
-        bundleName: 'com.thunderjs.facebook',
+        bundleIdentifier: 'com.thunderjs.facebook',
+        codePush: {
+          name: '',
+        },
       },
     });
   });
@@ -152,6 +196,9 @@ describe('#getSeedContent', () => {
   it('return contents correctly for PascalCase name', () => {
     expect(getSeedContent(SEED_TYPE.REACT_NATIVE, 'WhatsApp'))
     .toEqual({
+      type: SEED_TYPE.REACT_NATIVE,
+      template: 'git@github.com:thunder-js/react-native-ts-lab.git',
+      tag: '1.0.0',
       name: 'WhatsApp',
       node: {
         packageName: 'whatsapp',
@@ -170,18 +217,26 @@ describe('#getSeedContent', () => {
       ios: {
         displayName: 'WhatsApp',
         projectName: 'WhatsApp',
-        bundleName: 'com.thunderjs.whatsapp',
+        bundleIdentifier: 'com.thunderjs.whatsapp',
         fastlane: {
+          itcTeamName: '',
           itcTeamId: '',
+          teamName: '',
           teamId: '',
           appleId: '',
           certificatesRepoUrl: '',
           slackUrl: '',
         },
+        codePush: {
+          name: '',
+        },
       },
       android: {
         displayName: 'WhatsApp',
-        bundleName: 'com.thunderjs.whatsapp',
+        bundleIdentifier: 'com.thunderjs.whatsapp',
+        codePush: {
+          name: '',
+        },
       },
     });
   });
@@ -189,6 +244,9 @@ describe('#getSeedContent', () => {
   it('return contents correctly for camelCase name', () => {
     expect(getSeedContent(SEED_TYPE.REACT_NATIVE, 'whatsApp'))
     .toEqual({
+      type: SEED_TYPE.REACT_NATIVE,
+      template: 'git@github.com:thunder-js/react-native-ts-lab.git',
+      tag: '1.0.0',
       name: 'whatsApp',
       node: {
         packageName: 'whatsapp',
@@ -207,18 +265,26 @@ describe('#getSeedContent', () => {
       ios: {
         displayName: 'whatsApp',
         projectName: 'whatsApp',
-        bundleName: 'com.thunderjs.whatsapp',
+        bundleIdentifier: 'com.thunderjs.whatsapp',
         fastlane: {
+          itcTeamName: '',
           itcTeamId: '',
+          teamName: '',
           teamId: '',
           appleId: '',
           certificatesRepoUrl: '',
           slackUrl: '',
         },
+        codePush: {
+          name: '',
+        },
       },
       android: {
         displayName: 'whatsApp',
-        bundleName: 'com.thunderjs.whatsapp',
+        bundleIdentifier: 'com.thunderjs.whatsapp',
+        codePush: {
+          name: '',
+        },
       },
     });
   });
@@ -226,6 +292,9 @@ describe('#getSeedContent', () => {
   it('return contents correctly for lowercase name', () => {
     expect(getSeedContent(SEED_TYPE.REACT_NATIVE, 'myname'))
     .toEqual({
+      type: SEED_TYPE.REACT_NATIVE,
+      template: 'git@github.com:thunder-js/react-native-ts-lab.git',
+      tag: '1.0.0',
       name: 'myname',
       node: {
         packageName: 'myname',
@@ -244,18 +313,26 @@ describe('#getSeedContent', () => {
       ios: {
         displayName: 'myname',
         projectName: 'myname',
-        bundleName: 'com.thunderjs.myname',
+        bundleIdentifier: 'com.thunderjs.myname',
         fastlane: {
+          itcTeamName: '',
           itcTeamId: '',
+          teamName: '',
           teamId: '',
           appleId: '',
           certificatesRepoUrl: '',
           slackUrl: '',
         },
+        codePush: {
+          name: '',
+        },
       },
       android: {
         displayName: 'myname',
-        bundleName: 'com.thunderjs.myname',
+        bundleIdentifier: 'com.thunderjs.myname',
+        codePush: {
+          name: '',
+        },
       },
     });
   });
@@ -263,6 +340,9 @@ describe('#getSeedContent', () => {
   it('return contents correctly for special characters name', () => {
     expect(getSeedContent(SEED_TYPE.REACT_NATIVE, 'João-Louco Da sílva'))
     .toEqual({
+      type: SEED_TYPE.REACT_NATIVE,
+      template: 'git@github.com:thunder-js/react-native-ts-lab.git',
+      tag: '1.0.0',
       name: 'João-Louco Da sílva',
       node: {
         packageName: 'joao-louco-da-silva',
@@ -280,19 +360,27 @@ describe('#getSeedContent', () => {
       },
       ios: {
         displayName: 'João-Louco Da sílva',
-        projectName: 'Joao-Louco-Da-silva',
-        bundleName: 'com.thunderjs.joao-louco-da-silva',
+        projectName: 'JoaoLoucoDasilva',
+        bundleIdentifier: 'com.thunderjs.joao-louco-da-silva',
         fastlane: {
+          itcTeamName: '',
           itcTeamId: '',
+          teamName: '',
           teamId: '',
           appleId: '',
           certificatesRepoUrl: '',
           slackUrl: '',
         },
+        codePush: {
+          name: '',
+        },
       },
       android: {
         displayName: 'João-Louco Da sílva',
-        bundleName: 'com.thunderjs.joao-louco-da-silva',
+        bundleIdentifier: 'com.thunderjs.joao-louco-da-silva',
+        codePush: {
+          name: '',
+        },
       },
     });
   });

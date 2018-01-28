@@ -19,6 +19,7 @@ const TEMPLATE_URL = {
 export interface IReactNativeSeed {
   type: string,
   template: string,
+  tag: string,
   name: string,
   node: {
     packageName: string,
@@ -48,27 +49,27 @@ export interface IReactNativeSeed {
       slackUrl: string,
     },
     codePush: {
-      staging: string,
-      production: string,
+      name: string,
     },
   },
   android: {
     displayName: string,
     bundleIdentifier: string,
     codePush: {
-      staging: string,
-      production: string,
+      name: string,
     },
   },
 }
 
 const spaceToHyphen = (text: string): string => text.replace(new RegExp(' ', 'g'), '-')
+const removeSpaces = (text: string): string => text.replace(new RegExp(' ', 'g'), '')
+const removeHyphen = (text: string): string => text.replace(new RegExp('-', 'g'), '')
 
 const getBundleName = (name: string): string => `com.thunderjs.${R.pipe(removeDiacritics, spaceToHyphen, toLowerCase)(name)}`
 
 const getFacebookAppDisplayName = (name: string): string => name
 const getIosDisplayName = (name: string): string => name
-const getIosProjectName = (name: string): string => R.pipe(removeDiacritics, spaceToHyphen)(name)
+const getIosProjectName = (name: string): string => R.pipe(removeDiacritics, removeSpaces, removeHyphen)(name)
 const getIosBundleName = (name: string): string => getBundleName(name)
 const getAndroidDisplayName = (name: string): string => name
 const getAndroidBundleName = (name: string): string => getBundleName(name)
@@ -78,6 +79,7 @@ export const getReactNativeSeedContent = (name: string): IReactNativeSeed => ({
   type: SEED_TYPE.REACT_NATIVE,
   template: TEMPLATE_URL.reactNative,
   name : name ? name : '',
+  tag: '1.0.0',
   node: {
     packageName: name ? getNodePackageName(name) : '',
   },
@@ -106,16 +108,14 @@ export const getReactNativeSeedContent = (name: string): IReactNativeSeed => ({
       slackUrl: '',
     },
     codePush: {
-      staging: '',
-      production: '',
+      name: '',
     },
   },
   android: {
     displayName: name ? getAndroidDisplayName(name) : '',
     bundleIdentifier: name ? getAndroidBundleName(name) : '',
     codePush: {
-      staging: '',
-      production: '',
+      name: '',
     },
   },
 })
